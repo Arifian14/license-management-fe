@@ -147,7 +147,6 @@
           <!--begin::Illustration-->
           <img
             class="mw-100 mh-200px"
-            alt="metronic"
             :src="getIllustrationsPath('1.png')"
           />
           <!--end::Illustration-->
