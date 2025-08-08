@@ -9,7 +9,6 @@ export interface User {
   email: string;
   password: string;
   api_token: string;
-  data: any
 }
 
 export const useAuthStore = defineStore("auth", () => {
@@ -19,9 +18,10 @@ export const useAuthStore = defineStore("auth", () => {
 
   function setAuth(authUser: User) {
     isAuthenticated.value = true;
-    user.value = authUser;
+    user.value = authUser.data.payload;
     errors.value = {};
-    JwtService.saveToken(user.value.data.access_token);
+
+    JwtService.saveToken(authUser.data.access_token);
   }
 
   function setError(error: any) {
@@ -36,7 +36,7 @@ export const useAuthStore = defineStore("auth", () => {
   }
 
   function login(credentials: User) {
-    return ApiService.post("auth", credentials)
+    return ApiService.post("/api/auth", credentials)
       .then(({ data }) => {
         setAuth(data);
       })
@@ -69,21 +69,21 @@ export const useAuthStore = defineStore("auth", () => {
       });
   }
 
-  function verifyAuth() {
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      // ApiService.post("verify_token", { api_token: JwtService.getToken() })
-      //   .then(({ data }) => {
-      //     setAuth(data);
-      //   })
-      //   .catch(({ response }) => {
-      //     setError(response.data.errors);
-      //     purgeAuth();
-      //   });
-    } else {
-      purgeAuth();
-    }
-  }
+  // function verifyAuth() {
+  //   if (JwtService.getToken()) {
+  //     ApiService.setHeader();
+  //     ApiService.post("verify_token", { api_token: JwtService.getToken() })
+  //       .then(({ data }) => {
+  //         setAuth(data);
+  //       })
+  //       .catch(({ response }) => {
+  //         setError(response.data.errors);
+  //         purgeAuth();
+  //       });
+  //   } else {
+  //     purgeAuth();
+  //   }
+  // }
 
   return {
     errors,
@@ -93,6 +93,6 @@ export const useAuthStore = defineStore("auth", () => {
     logout,
     register,
     forgotPassword,
-    verifyAuth,
+    // verifyAuth,
   };
 });

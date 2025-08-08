@@ -34,12 +34,12 @@
         <router-link to="/dashboard">
           <img
             alt="Logo"
-            :src="getAssetPath('media/logos/demo2.png')"
+            :src="getAssetPath('media/BSILOGO.png')"
             class="logo-default h-25px"
           />
           <img
             alt="Logo"
-            :src="getAssetPath('media/logos/demo2-sticky.png')"
+            :src="getAssetPath('media/BSILOGO.png')"
             class="logo-sticky h-25px"
           />
         </router-link>

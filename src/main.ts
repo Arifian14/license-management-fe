@@ -26,7 +26,6 @@ app.use(router);
 app.use(ElementPlus);
 
 ApiService.init(app);
-ApiService.setHeader();
 initApexCharts(app);
 initInlineSvg(app);
 initKtIcon(app);

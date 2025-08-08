@@ -42,33 +42,6 @@ const routes: Array<RouteRecordRaw> = [
           breadcrumbs: ["Accident", "Detail"],
         },
       },
-      {
-        path: "/msa",
-        name: "msa",
-        component: () => import("@/views/msa/pages.vue"),
-        meta: {
-          pageTitle: "MSA",
-          breadcrumbs: ["MSA"],
-        },
-      },
-      {
-        path: "/msa/add",
-        name: "msa_add",
-        component: () => import("@/views/msa/Part/Form.vue"),
-        meta: {
-          pageTitle: "Form Add MSA",
-          breadcrumbs: ["MSA","Form"],
-        },
-      },
-      {
-        path: "/license",
-        name: "license",
-        component: () => import("@/views/license/pages.vue"),
-        meta: {
-          pageTitle: "License",
-          breadcrumbs: ["License"],
-        },
-      },
     ],
   },
   {
@@ -142,7 +115,7 @@ router.beforeEach((to, from, next) => {
   configStore.resetLayoutConfig();
 
   // verify auth token before each page change
-  authStore.verifyAuth();
+  // authStore.verifyAuth();
 
   // before page access check if page requires authentication
   if (to.meta.middleware == "auth") {

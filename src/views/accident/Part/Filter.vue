@@ -23,23 +23,14 @@
                 </div>
                 <div class="col-md-3"
                     v-if="selectedFilter == 'status' || selectedFilter == 'aplikasi' || selectedFilter == 'pic'">
-                    <dropdown-filter label="Search" v-model="localTextFilter" :options="[
-                        { label: 'Open', value: 'open' },
-                        { label: 'Temporary Action', value: 'temp' },
-                        { label: 'Full Action', value: 'full' }
-                    ]" v-if="selectedFilter == 'status'" />
+                    <dropdown-filter label="Search" v-model="localTextFilter" :options="listStatus" 
+                    v-if="selectedFilter == 'status'" />
 
-                    <dropdown-filter label="Search" v-model="localTextFilter" :options="[
-                        { label: 'Rizky', value: 'rizky' },
-                        { label: 'Deris', value: 'deris' },
-                        { label: 'Zolla', value: 'zolla' }
-                    ]" v-if="selectedFilter == 'pic'" />
+                    <dropdown-filter label="Search" v-model="localTextFilter" :options="listPIC" 
+                    v-if="selectedFilter == 'pic'" />
 
-                    <dropdown-filter label="Search" v-model="localTextFilter" :options="[
-                        { label: 'APPEL', value: 'appel' },
-                        { label: 'DVC', value: 'dvc' },
-                        { label: 'MCS', value: 'mcs' }
-                    ]" v-if="selectedFilter == 'aplikasi'" />
+                    <dropdown-filter label="Search" v-model="localTextFilter" :options="listAplikasi" 
+                    v-if="selectedFilter == 'aplikasi'" />
                 </div>
                 <div class="col-md-2">
                     <br>
@@ -52,12 +43,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, onMounted, ref } from "vue";
 import type { PropType } from 'vue';
 import DropdownFilter from "@/components/widget/DropdownFilter.vue";
 import DateRangeFilter from "@/components/widget/DateRangeFilter.vue";
 import TextInputFilter from "@/components/widget/TextInputFilter.vue";
 import Button from "@/components/widget/Button.vue";
+import ApiService from "@/core/services/ApiService";
+import { object } from "yup";
 
 interface DateRange {
     start: string | null;
@@ -83,6 +76,18 @@ export default defineComponent({
         },
         datefilter: {
             type: Object as PropType<DateRange>,
+            required: true
+        },
+        listAplikasi:{
+            type: Array as PropType<{ label: string; value: string }[]>,
+            required: true
+        },
+        listStatus:{
+            type: Array as PropType<{ label: string; value: string }[]>,
+            required: true
+        },
+        listPIC:{
+            type: Array as PropType<{ label: string; value: string }[]>,
             required: true
         }
     },
@@ -111,7 +116,8 @@ export default defineComponent({
             localSelectedFilter,
             localTextFilter,
             localDateFilter,
-            emitSearch
+            emitSearch,
+
         };
 
     }
