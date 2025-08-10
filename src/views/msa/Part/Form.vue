@@ -1,7 +1,7 @@
 <template>
   <VForm id="msa-form" class="form" @submit="handleSubmit" :validation-schema="validationSchema">
     <!--begin::Feeds Widget 1-->
-    <div class="card" :class="widgetClasses">
+    <div class="card mb-5" :class="widgetClasses">
       <!--begin::Body-->
       <div class="card-body pb-0">
         <div class="row">
@@ -13,7 +13,7 @@
                   type="text" 
                   class="form-control form-control-solid" 
                   placeholder="No PKS"
-                  v-model="msa.pks"
+                  v-model="formRef.pks"
               />
               <div class="fv-plugins-message-container">
                   <div class="fv-help-block">
@@ -27,10 +27,12 @@
               <label for="exampleFormControlInput1" class="required form-label">Budget Quota</label>
               <Field 
                   name="budget_quota" 
-                  type="number" 
+                  type="text" 
                   class="form-control form-control-solid" 
                   placeholder="Budget Quota"
-                  v-model="msa.budget_quota"
+                  v-model="amountFormatted"
+                  @blur="formatRupiah"
+                  @focus="unformatRupiah"
               />
             </div>
           </div>
@@ -42,7 +44,7 @@
                   type="number" 
                   class="form-control form-control-solid" 
                   placeholder="People Quota"
-                  v-model="msa.people_quota"
+                  v-model="formRef.people_quota"
               />
               <div class="fv-plugins-message-container">
                   <div class="fv-help-block">
@@ -62,7 +64,7 @@
                   type="date" 
                   class="form-control form-control-solid" 
                   placeholder="Date Started"
-                  v-model="msa.date_started"
+                  v-model="formRef.date_started"
               />
               <div class="fv-plugins-message-container">
                   <div class="fv-help-block">
@@ -79,7 +81,7 @@
                   type="date" 
                   class="form-control form-control-solid" 
                   placeholder="Date Ended"
-                  v-model="msa.date_ended"
+                  v-model="formRef.date_ended"
               />
               <div class="fv-plugins-message-container">
                   <div class="fv-help-block">
@@ -93,11 +95,10 @@
               <label for="exampleFormControlInput1" class="required form-label">File PKS</label>
               <Field 
                   name="file_pks" 
-                  type="file" 
+                  type="text" 
                   class="form-control form-control-solid" 
                   placeholder="File PKS"
-                  :value="undefined"
-                  @change="e => msa.file_bast = e.target.files[0]"
+                  v-model="formRef.file_pks"
               />
               <div class="fv-plugins-message-container">
                   <div class="fv-help-block">
@@ -114,11 +115,10 @@
               <label for="exampleFormControlInput1" class="required form-label">File BAST</label>
               <Field 
                   name="file_bast" 
-                  type="file" 
+                  type="text" 
                   class="form-control form-control-solid" 
                   placeholder="File BAST"
-                  :value="undefined"
-                  @change="e => msa.file_bast = e.target.files[0]"
+                  v-model="formRef.file_bast"
               />
               <div class="fv-plugins-message-container">
                   <div class="fv-help-block">
@@ -132,140 +132,70 @@
       <!--end::Body-->
     </div>
 
-    <div class="card mt-10" :class="widgetClasses">
-      <!--begin::Body-->
-      <div class="card-body pb-0">
-        <div class="row">
-          <div class="col-5">
-            <div class="mb-10">
-              <label for="usedBudget" class="required form-label">Used Budget Quota</label>
-              <input type="text" id="usedBudget" :value="totalUsedBudget" class="form-control form-control-solid" placeholder="Application input" readonly />
-            </div>
-          </div>
-          <div class="col-5">
-            <div class="mb-10">
-              <label for="usedPeople" class="required form-label">Used People Quota</label>
-              <input type="number" id="usedPeople" :value="totalUsedPeople" class="form-control form-control-solid" placeholder="Application input" readonly />
-            </div>
-          </div>
-          <div class="col-2">
-            <label for="usedPeople" class="form-label">&nbsp;</label><br>
-            <button class="btn btn-success" @click="addDetail">Add MSA</button>
-          </div>
-        </div>
+    <div class="card">
+      <div class="card-header border-0 pt-6">
+      <!--begin::Card title-->
+      <div class="card-title">
+        <!--end::Search-->
       </div>
-      <!--end::Body-->
-    </div>
-
-    <div class="row">
-      <div class="col-4" v-for="(detail, index) in msa.details" :key="index">
-        <div class="card mt-10" :class="widgetClasses">
-          <!--begin::Header-->
-          <div class="card-header border-0 pt-5">
-            <h3 class="card-title align-items-start flex-column">
-              <span class="card-label fw-bold text-gray-900">MSA-{{ index + 1 }}</span>
-              <span class="text-muted mt-1 fw-semibold fs-7">Profile Details</span>
-            </h3>
-
-            <div class="card-toolbar">
-              <!--begin::Menu-->
-              <button
-                type="button"
-                class="btn btn-sm btn-color-danger btn-active-light-danger"
-                data-kt-menu-trigger="click"
-                data-kt-menu-placement="bottom-end"
-                data-kt-menu-flip="top-end"
-                @click="removeDetail(index)"
-                v-if="msa.details.length > 1"
-              >
-                Remove 
-              </button>
-              <Dropdown1></Dropdown1>
-              <!--end::Menu-->
-            </div>
-          </div>
-          <!--end::Header-->
-
-          <!--begin::Body-->
-          <div class="card-body pb-0">
-            <div class="mb-5">
-              <label for="applicationFormControlInput1" class="required form-label">Name</label>
-              <Field 
-                  :name="`details[${index}].name`"
-                  type="text" 
-                  class="form-control form-control-solid" 
-                  placeholder="Name"
-                  v-model="detail.name"
-              />
-              <div class="fv-plugins-message-container">
-                  <div class="fv-help-block">
-                      <ErrorMessage :name="`details[${index}].name`" />
-                  </div>
-              </div>
-            </div>
-            <div class="mb-5">
-              <label for="exampleFormControlInput1" class="required form-label">Role</label>
-              <Field 
-                  :name="`details[${index}].role`"
-                  type="text" 
-                  class="form-control form-control-solid" 
-                  placeholder="Role"
-                  v-model="detail.role"
-              />
-              <div class="fv-plugins-message-container">
-                  <div class="fv-help-block">
-                      <ErrorMessage :name="`details[${index}].role`" />
-                  </div>
-              </div>
-            </div>
-            <div class="mb-5">
-              <label for="exampleFormControlInput1" class="required form-label">Rate</label>
-              <Field 
-                  :name="`details[${index}].rate`"
-                  type="number" 
-                  class="form-control form-control-solid" 
-                  placeholder="Rate"
-                  v-model="detail.rate"
-              />
-              <div class="fv-plugins-message-container">
-                  <div class="fv-help-block">
-                      <ErrorMessage :name="`details[${index}].rate`"/>
-                  </div>
-              </div>
-            </div>
-            <div class="mb-5">
-              <label for="exampleFormControlInput1" class="required form-label">Project</label>
-              <Field 
-                  :name="`details[${index}].project`"
-                  type="text" 
-                  class="form-control form-control-solid" 
-                  placeholder="Project"
-                  v-model="detail.project"
-              />
-              <div class="fv-plugins-message-container">
-                  <div class="fv-help-block">
-                      <ErrorMessage :name="`details[${index}].project`"/>
-                  </div>
-              </div>
-            </div>
-            <div class="mb-10">
-              <label for="exampleFormControlInput1" class="required form-label">Group Position</label>
-              <Field 
-                  :name="`details[${index}].group_position`"
-                  type="text" 
-                  class="form-control form-control-solid" 
-                  placeholder="Group Position"
-                  v-model="detail.group_position"
-              />
-              <div class="fv-plugins-message-container">
-                  <div class="fv-help-block">
-                      <ErrorMessage :name="`details[${index}].group_position`"/>
-                  </div>
-              </div>
-            </div>
-          </div>
-          <!--end::Body-->
+      <!--begin::Card title-->
+      <!--begin::Card toolbar-->
+      <div class="card-toolbar">
+        <!--begin::Toolbar-->
+        <div
+          v-if="selectedIds.length === 0"
+          class="d-flex justify-content-end"
+          data-kt-customer-table-toolbar="base"
+        >
+          <!--begin::Add customer-->
+          <button
+            type="button"
+            class="btn btn-primary"
+            @click="openModal('create')"
+          >
+            <KTIcon icon-name="plus" icon-class="fs-2" />
+            Add Role
+          </button>
+          <!--end::Add customer-->
         </div>
+        <!--end::Toolbar-->
+      </div>
+      <!--end::Card toolbar-->
+    </div>
+      <div class="card-body pt-0">
+        <Datatable
+          @on-sort="sort"
+          @on-items-select="onItemSelect"
+          :data="formRef.roles"
+          :header="tableHeader"
+          :enable-items-per-page-dropdown="true"
+          :checkbox-enabled="false"
+          checkbox-label="id"
+        >
+          <template v-slot:name="{ row }">
+            {{ row.role }}
+          </template>
+          <template v-slot:role="{ row }">
+            {{ rupiahFormatter(row.rate) }}
+          </template>
+          <template v-slot:actions="{ row }">
+            <button
+                type="button"
+                class="btn btn-sm btn-warning me-2"
+                @click="openModal('edit',row)"
+              >
+                Update 
+              </button>
+
+            <button
+                type="button"
+                class="btn btn-sm btn-danger"
+                @click="removeDetail(row)"
+              >
+                Delete 
+              </button>
+          </template>
+        </Datatable>
       </div>
     </div>
 
@@ -289,26 +219,42 @@
     </div>
     <!--end::Feeds Widget 1-->
   </VForm>
+
+    <!-- Modal Komponen -->
+    <RoleModal
+      ref="modalRoleRef"
+      @submit-role="handleSubmitRole"
+      modalId="modal-role"
+      :mode="modalMode"
+      :data="selectedData"
+    />
 </template>
 
 <script lang="ts">
 import { getAssetPath } from "@/core/helpers/assets";
-import { defineComponent, onMounted,computed,ref } from "vue";
+import { defineComponent, onMounted,computed,ref, reactive } from "vue";
 import DateRangeFilter from "@/components/widget/DateRangeFilter.vue";
 import { Field, ErrorMessage, Form as VForm, useForm } from "vee-validate";
 import * as Yup from "yup";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import ApiService from "@/core/services/ApiService";
 
-interface MSADetail {
-  name: string;
+import arraySort from "array-sort";
+import Datatable from "@/components/kt-datatable/KTDataTable.vue";
+import type { Sort } from "@/components/kt-datatable//table-partials/models";
+import { MenuComponent } from "@/assets/ts/components";
+import { Modal } from 'bootstrap'
+import RoleModal from "./Modal/RoleForm.vue";
+import { useRouter } from 'vue-router';
+import {rupiahFormatter,reverseRupiahFormatter} from "../../../../utils/utils";
+
+interface IMSADetail {
+  id?: number;
   rate: number;
   role: string;
-  project: string;
-  group_position: string;
 }
 
-interface MSAData {
+interface IMSA {
   pks: string;
   date_started: string;
   date_ended: string;
@@ -316,7 +262,7 @@ interface MSAData {
   budget_quota: number;
   file_pks: any;
   file_bast: any;
-  details: MSADetail[];
+  roles: IMSADetail[];
 }
 
 
@@ -330,10 +276,56 @@ export default defineComponent({
     ErrorMessage,
     VForm,
     Field,
+    Datatable,
+    RoleModal
   },
   setup(props, { emit }) {
+    const router = useRouter();
     const { validateField } = useForm();
     const submitButtonRef = ref<null | HTMLButtonElement>(null);
+    const selectedIds = ref<Array<number>>([]);
+    const selectedData:any = ref({});
+    const modalMode = ref<'create' | 'edit'>('create');
+
+    const amount = ref<number | null>(null)
+    const amountFormatted = ref<string>('')
+
+    const formRef = reactive<IMSA>({
+        pks: "",
+        date_started: "",
+        date_ended: "",
+        people_quota: 0,
+        budget_quota: 0,
+        file_pks: "",
+        file_bast: "",
+        roles: []
+    });
+
+    const msaData = computed(() => formRef)
+
+    const tableHeader = ref([
+      {
+        columnName: "Role",
+        columnLabel: "name",
+        columnWidth: 175,
+      },
+      {
+        columnName: "Rate",
+        columnLabel: "role",
+        columnWidth: 230,
+      },
+      {
+        columnName: "Actions",
+        columnLabel: "actions",
+        columnWidth: 135,
+      },
+    ]);
+
+
+      onMounted(() => {
+        // initRole.value.splice(0, tableData.value.length, ...tableData.value);
+        
+      })
     
 
     const detailSchema = Yup.object().shape({
@@ -349,64 +341,60 @@ export default defineComponent({
       date_started: Yup.string().required().label("Date Started"),
       date_ended: Yup.string().required().label("Date Ended"),
       people_quota: Yup.number().required().label("People Quota"),
-      budget_quota: Yup.number().required().label("Budget Quota"),
+      budget_quota: Yup.string().required().label("Budget Quota"),
       file_pks: Yup.mixed().required().label("File PKS"),
       file_bast: Yup.mixed().required().label("File BAST"),
-      details: Yup.array().of(detailSchema).min(1, "At least one person must be added")
+      roles: Yup.array().of(detailSchema).min(1, "At least one role must be added")
     });
 
-    const msa = ref<MSAData>({
-        pks: "",
-        date_started: "",
-        date_ended: "",
-        people_quota: 0,
-        budget_quota: 0,
-        file_pks: null as File | null,
-        file_bast: null as File | null,
-        details: [
-          {
-            name: "",
-            rate: 0,
-            role: "",
-            project: "",
-            group_position: ""
-          }
-        ]
-    });
-
-    const addDetail = () => {
-      msa.value.details.push({
-        name: "",
-        rate: 0,
-        role: "",
-        project: "",
-        group_position: ""
-      });
+    // GET API by ID
+    const fetchDataById = async (id: string | number) => {
+      try {
+        // const url = `${import.meta.env.VITE_APP_API_URL}/msa/${id}`
+        // const response = await ApiService.get(url);
+        // selectedData.value = response.data.data || response.data;
+        selectedData.value = {
+          id: formRef.roles[id].id,
+          role: formRef.roles[id].role,
+          rate: formRef.roles[id].rate
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data:", error);
+        Swal.fire("Error", "Gagal mengambil data.", "error");
+      }
     };
 
-    const removeDetail = (index: number) => {
-      msa.value.details.splice(index, 1);
+    const openModal = async (mode: 'create' | 'edit', row: any = {}) => {
+      modalMode.value = mode;
+
+      if (mode === 'edit') {
+        await fetchDataById(row.id);
+      } else {
+        selectedData.value = {}; // Reset saat create
+      }
+
+      setTimeout(() => {
+        const modalEl = document.getElementById('modal-role');
+        if (modalEl) {
+          const modal = Modal.getOrCreateInstance(modalEl);
+          modal.show();
+        }
+      }, 100);
     };
 
-    const totalUsedBudget = computed(() =>
-      msa.value.details.reduce((sum, detail) => sum + (Number(detail.rate) || 0), 0)
-    );
-
-    const totalUsedPeople = computed(() => msa.value.details.length);
-
-    const submitAPI = async (data: typeof msa.value) => {
-      const formData = new FormData()
-      formData.append('pks', data.pks)
-      formData.append('date_started', data.date_started)
-      formData.append('date_ended', data.date_ended)
-      formData.append('people_quota', data.people_quota.toString())
-      formData.append('budget_quota', data.budget_quota.toString())
-      if (data.file_pks) formData.append('file_pks', data.file_pks);
-      if (data.file_bast) formData.append('file_bast', data.file_bast);
-      formData.append('details', JSON.stringify(data.details))
+    const submitAPI = async (data: IMSA) => {
+      const formData = {};
+      formData['pks'] = data.pks;
+      formData['date_started'] = data.date_started;
+      formData['date_ended'] = data.date_ended;
+      formData['people_quota'] = data.people_quota;
+      formData['budget_quota'] = data.budget_quota;
+      formData['file_pks'] = data.file_pks;
+      formData['file_bast'] = data.file_bast;
+      formData['roles'] = data.roles;
 
       try {
-          const url = `${import.meta.env.VITE_APP_API_URL}/msa`;
+          const url = `${import.meta.env.VITE_APP_API_URL}/v2/msa`;
           const response:any = await ApiService.post(url, formData);
           if (response?.data) {
               Swal.fire({
@@ -417,6 +405,8 @@ export default defineComponent({
                       confirmButton: 'btn btn-success',
                   },
               });
+
+              router.push({name:"msa"});
           }
       } catch (error) {
           console.error("Error ambil data:", error);
@@ -447,20 +437,117 @@ export default defineComponent({
       });
 
       if (confirm.isConfirmed) {
-        await submitAPI(msa.value)
+        await submitAPI(formRef)
       }
     }
 
+    const removeDetail = async (row: any) => {
+      const confirm = await Swal.fire({
+        title: 'Apakah kamu yakin?',
+        text: 'Data akan dihapus',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal',
+        customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-light',
+        },
+        buttonsStyling: false,
+      });
+
+      if (confirm.isConfirmed) {
+        const index = formRef.roles.findIndex(obj => (obj.role === row.role && obj.rate === row.rate));
+        formRef.roles.splice(index, 1);
+      }
+    };
+
+    const search = ref<string>("");
+    const searchItems = () => {
+      // formRef.value.details.splice(0, formRef.value.details.length, ...initRole.value);
+      // if (search.value !== "") {
+      //   let results: Array<IRole> = [];
+      //   for (let j = 0; j < formRef.value.details.length; j++) {
+      //     if (searchingFunc(formRef.value.details[j], search.value)) {
+      //       results.push(formRef.value.details[j]);
+      //     }
+      //   }
+      //   formRef.value.details.splice(0, formRef.value.details.length, ...results);
+      // }
+      MenuComponent.reinitialization();
+    };
+
+    const searchingFunc = (obj: any, value: string): boolean => {
+      for (let key in obj) {
+        if (!Number.isInteger(obj[key]) && !(typeof obj[key] === "object")) {
+          if (obj[key].indexOf(value) != -1) {
+            return true;
+          }
+        }
+      }
+      return false;
+    };
+
+    const deleteCustomer = (id: number) => {
+      for (let i = 0; i < formRef.roles.length; i++) {
+        if (formRef.roles[i].id === id) {
+          formRef.roles.splice(i, 1);
+        }
+      }
+    };
+
+    const sort = (sort: Sort) => {
+      const reverse: boolean = sort.order === "asc";
+      if (sort.label) {
+        arraySort(formRef.roles, sort.label, { reverse });
+      }
+    };
+    const onItemSelect = (selectedItems: Array<number>) => {
+      selectedIds.value = selectedItems;
+    };
+
+    const handleSubmitRole = (mode,role) => {
+      if(mode == 'create'){
+        role['id'] = formRef.roles.length;
+        formRef.roles.push(role)
+      }else{
+        formRef.roles[role.id] = role
+      }
+    }
+
+    function formatRupiah() {
+      if (amountFormatted.value) {
+        formRef.budget_quota = reverseRupiahFormatter(amountFormatted.value)
+        amountFormatted.value = rupiahFormatter(formRef.budget_quota)
+      }
+    }
+
+    function unformatRupiah() {
+      amountFormatted.value = amount.value?.toString() ?? ''
+    }
+
     return {
-      getAssetPath,
       handleSubmit,
+      getAssetPath,
       validationSchema,
-      msa,
-      addDetail,
-      removeDetail,
-      totalUsedPeople,
-      totalUsedBudget,
+      formRef,
       validateField,
+      deleteCustomer,
+      onItemSelect,
+      tableHeader,
+      sort,
+      selectedIds,
+      searchItems,
+      search,
+      openModal,
+      modalMode,
+      selectedData,
+      handleSubmitRole,
+      removeDetail,
+      formatRupiah,
+      unformatRupiah,
+      amountFormatted,
+      rupiahFormatter
     };
   },
 });

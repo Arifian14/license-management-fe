@@ -6,12 +6,12 @@
             <MsaHeader @add="handleAdd" />
             
             <!-- Filter Component -->
-            <MsaFilter 
+            <!-- <MsaFilter 
                 v-model:selectedFilter="selectedFilter"
                 v-model:textfilter="textfilter"
                 v-model:datefilter="datefilter"
                 @search="mencariData"
-            />
+            /> -->
             
             <!-- Body Component -->
             <MsaBody 
@@ -28,10 +28,12 @@
 <script lang="ts">
 import {onBeforeMount, onMounted, reactive, ref, watch,defineComponent} from "vue";
 import { useRouter } from 'vue-router';
-import MsaHeader from "./Part/Body.vue";
+import MsaHeader from "./Part/Header.vue";
 import MsaFilter from "./Part/Filter.vue";
 import MsaBody from "./Part/Body.vue";
 import ApiService from "@/core/services/ApiService";
+import {formatDateToYMD,rupiahFormatter} from "../../../utils/utils"
+
 
 export default defineComponent({
     name: "pages-msa",
@@ -53,7 +55,6 @@ export default defineComponent({
 
         const columns = [
             { key: 'pks', label: 'PKS' },
-            { key: 'bast', label: 'BAST' },
             { key: 'dateStarted', label: 'Date Start' },
             { key: 'dateEnded', label: 'Date End' },
             { key: 'peopleQuota', label: 'People Quota' },
@@ -63,7 +64,7 @@ export default defineComponent({
 
 
         const getData = async () => {
-            const url = `${import.meta.env.VITE_APP_API_URL}/msa`
+            const url = `${import.meta.env.VITE_APP_API_URL}/v2/msa`
             try {
                 const response = await ApiService.query(url, {
                     params: {
@@ -85,7 +86,16 @@ export default defineComponent({
 
                 const data = response.data.data;
                 console.log("Data hasil API:", data);
-                items.value = data;
+                items.value = data.map((item) => {
+                    return {
+                        id: item.id,
+                        pks: item.pks,
+                        dateStarted: formatDateToYMD(item.dateStarted),
+                        dateEnded: formatDateToYMD(item.dateEnded),
+                        peopleQuota: item.peopleQuota,
+                        budgetQuota: rupiahFormatter(item.budgetQuota)
+                    }
+                });
             } catch (error) {
                 console.error("Error ambil data:", error);
             }
@@ -103,13 +113,11 @@ export default defineComponent({
         });
 
         const view = (row: any) => {
-            router.push({ name: 'accident-detail'});
-            console.log('View:', row);
+            router.push({ path:`/msa/add_detail/${row.id}`, query: {mode: "view"}});
         };
 
         const edit = (row: any) => {
-            router.push({ name: 'accident-detail', query: { mode: 'edit' }});
-            console.log('Edit:', row);
+            router.push({ path:`/msa/add_detail/${row.id}`, query: {mode: "edit"}});
         };
 
         const remove = (row: any) => {

@@ -56,6 +56,15 @@ const routes: Array<RouteRecordRaw> = [
         name: "msa_add",
         component: () => import("@/views/msa/Part/Form.vue"),
         meta: {
+          pageTitle: "Form Add PKS",
+          breadcrumbs: ["PKS","Form"],
+        },
+      },
+      {
+        path: "/msa/add_detail/:id",
+        name: "msa_add_detail",
+        component: () => import("@/views/msa/Part/FormMSA.vue"),
+        meta: {
           pageTitle: "Form Add MSA",
           breadcrumbs: ["MSA","Form"],
         },

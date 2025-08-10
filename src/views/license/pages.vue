@@ -6,12 +6,12 @@
             <LicenseHeader @add="handleAdd" />
             
             <!-- Filter Component -->
-            <LicenseFilter 
+            <!-- <LicenseFilter 
                 v-model:selectedFilter="selectedFilter"
                 v-model:textfilter="textfilter"
                 v-model:datefilter="datefilter"
                 @search="mencariData"
-            />
+            /> -->
             
             <!-- Body Component -->
             <LicenseBody 
@@ -30,6 +30,7 @@ import LicenseHeader from "./Part/Header.vue";
 import LicenseFilter from "./Part/Filter.vue";
 import LicenseBody from "./Part/Body.vue";
 import ApiService from "@/core/services/ApiService";
+import {formatDateToYMD} from "../../../utils/utils"
 
 export default defineComponent({
     name: "pages-accident",
@@ -51,8 +52,7 @@ export default defineComponent({
 
         const columns = [
             { key: 'pks', label: 'PKS' },
-            { key: 'bastFileUrl', label: 'BAST' },
-            { key: 'aplikasi', label: 'Aplikasi' },
+            { key: 'application', label: 'Aplikasi' },
             { key: 'dueDateLicense', label: 'Due Date' },
             { key: 'healthCheckRoutine', label: 'Health Check Routine' },
             { key: 'healthCheckActual', label: 'Health Check Actual' },
@@ -71,7 +71,17 @@ export default defineComponent({
 
                 const data = response.data.data;
                 console.log("Data hasil API:", data);
-                items.value = data;
+                items.value = data.map(item => {
+                    return {
+                        id:item.id,
+                        pks:item.pks,
+                        bastFileUrl:item.bastFileUrl,
+                        application:item.application,
+                        dueDateLicense:formatDateToYMD(item.dueDateLicense),
+                        healthCheckRoutine:formatDateToYMD(item.healthCheckRoutine),
+                        healthCheckActual:formatDateToYMD(item.healthCheckActual),
+                    }
+                });
             } catch (error) {
                 console.error("Error ambil data:", error);
             }
