@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onMounted } from "vue";
+import { defineComponent, ref, watch, onMounted, reactive } from "vue";
 import { useRouter } from 'vue-router';
 import AccidentHeader from "./Part/Header.vue";
 import AccidentFilter from "./Part/Filter.vue";
@@ -56,7 +56,18 @@ export default defineComponent({
             { key: 'action', label: '', slot: 'action', headerClass: 'text-end rounded-end' },
         ];
 
-        const getData = async (params: { page: number; per_page: number }) => {
+        const getData = async (params: { 
+        page: number; 
+        per_page: number;
+        entry_date_from?: string;
+        entry_date_to?: string;
+        application_id?: string;
+        pic_id?: string;
+        status_id?: string;
+        tiket_number?: string;
+        title?: string;
+        issue_code?: string
+        }) => {
             ApiService.setHeader()
             const respon = await ApiService.query('/api/incidents', { params })
             items.value = respon.data.data.map(item => ({
@@ -69,7 +80,12 @@ export default defineComponent({
         }
 
         const handleAdd = () => {
-            getData({ page: 1, per_page: 10 })
+            getData(
+              { 
+                page: 1, 
+                per_page: 10
+              }
+            )
         };
         watch(selectedFilter, () => {
             textfilter.value = '';
@@ -85,14 +101,78 @@ export default defineComponent({
         };
 
         const remove = () => {
-            getData({ page: 1, per_page: 10 })
+            getData(
+              { 
+                page: 1, 
+                per_page: 10
+              }
+            )
         };
 
         const mencariData = () => {
-            console.log(selectedFilter.value);
-            console.log(textfilter.value);
-            console.log(datefilter.value.end);
-            console.log(datefilter.value.start);
+          if(selectedFilter.value == 'date'){
+            const isoStringStart = datefilter.value.start.toISOString();
+            const formattedDateStart = isoStringStart.slice(0, 10);
+            
+            const isoStringEnd = datefilter.value.end.toISOString();
+            const formattedDateEnd = isoStringEnd.slice(0, 10);
+            getData(
+              { 
+                page: 1, 
+                per_page: 10,
+                entry_date_from: formattedDateStart,
+                entry_date_to: formattedDateEnd
+              }
+            )
+          }else if (selectedFilter.value == 'aplikasi'){
+            getData(
+              { 
+                page: 1, 
+                per_page: 10,
+                application_id: textfilter.value,
+              }
+            )
+          }else if(selectedFilter.value == 'pic'){
+            getData(
+              { 
+                page: 1, 
+                per_page: 10,
+                pic_id: textfilter.value,
+              }
+            )
+          }else if (selectedFilter.value == 'status'){
+            getData(
+              { 
+                page: 1, 
+                per_page: 10,
+                status_id: textfilter.value,
+              }
+            )
+          }else if (selectedFilter.value == 'notiket'){
+            getData(
+              { 
+                page: 1, 
+                per_page: 10,
+                tiket_number: textfilter.value,
+              }
+            )
+          }else if (selectedFilter.value == 'judul'){
+            getData(
+              { 
+                page: 1, 
+                per_page: 10,
+                title: textfilter.value,
+              }
+            )
+          }else if (selectedFilter.value == 'issue'){
+            getData(
+              { 
+                page: 1, 
+                per_page: 10,
+                issue_code: textfilter.value
+              }
+            )
+          }
         };
 
         const getListAplikasi = async () => {
