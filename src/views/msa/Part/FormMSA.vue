@@ -259,7 +259,7 @@ import Datatable from "@/components/kt-datatable/KTDataTable.vue";
 import type { Sort } from "@/components/kt-datatable//table-partials/models";
 import { MenuComponent } from "@/assets/ts/components";
 import { Modal } from 'bootstrap'
-import MSAModal from "./Modal/MsaForm.vue";
+import MSAModal from "./Modal/MsaModal.vue";
 import {formatDateToYMD,getDiffMonths,rupiahFormatter} from "../../../../utils/utils";
 import { useRoute } from 'vue-router';
 

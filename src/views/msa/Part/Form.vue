@@ -244,7 +244,7 @@ import Datatable from "@/components/kt-datatable/KTDataTable.vue";
 import type { Sort } from "@/components/kt-datatable//table-partials/models";
 import { MenuComponent } from "@/assets/ts/components";
 import { Modal } from 'bootstrap'
-import RoleModal from "./Modal/RoleForm.vue";
+import RoleModal from "./Modal/RoleModal.vue";
 import { useRouter } from 'vue-router';
 import {rupiahFormatter,reverseRupiahFormatter} from "../../../../utils/utils";
 

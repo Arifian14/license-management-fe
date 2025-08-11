@@ -53,7 +53,7 @@ import { Modal } from 'bootstrap'
 import Swal from 'sweetalert2';
 import Table from "@/components/widget/Table.vue";
 import Button from "@/components/widget/Button.vue";
-import LicenseModal from "./Modal/LicenseForm.vue";
+import LicenseModal from "./Modal/LicenseModal.vue";
 import ApiService from "@/core/services/ApiService";
 
 interface Column {
