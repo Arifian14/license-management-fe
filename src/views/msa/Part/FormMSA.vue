@@ -415,7 +415,8 @@ export default defineComponent({
     // GET API by ID
     const fetchPKSDataById = async (id: string | number) => {
       try {
-        const url = `${import.meta.env.VITE_APP_API_URL}/v2/msa/${id}`
+        ApiService.setHeader()
+        const url = `/api/v2/msa/${id}`
         const response = await ApiService.get(url);
         const data = response.data.data;
 
@@ -491,7 +492,8 @@ export default defineComponent({
       })
 
       try {
-          const url = `${import.meta.env.VITE_APP_API_URL}/v2/msa/${pksId}/details`;
+          ApiService.setHeader()
+          const url = `/api/v2/msa/${pksId}/details`;
           // const response:any = await ApiService.post(url, formData);
           const response: any = await ApiService.post(url, formData);
           

@@ -18,7 +18,11 @@ const MainMenuConfig: Array<MenuItem> = [
       },
       {
         heading: "MSA",
-        route: "/builder",
+        route: "/msa",
+      },
+      {
+        heading: "License",
+        route: "/license",
       },
     ],
   }

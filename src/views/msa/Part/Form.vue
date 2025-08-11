@@ -394,7 +394,7 @@ export default defineComponent({
       formData['roles'] = data.roles;
 
       try {
-          const url = `${import.meta.env.VITE_APP_API_URL}/v2/msa`;
+          const url = `/api/v2/msa`;
           const response:any = await ApiService.post(url, formData);
           if (response?.data) {
               Swal.fire({
@@ -523,7 +523,7 @@ export default defineComponent({
     }
 
     function unformatRupiah() {
-      amountFormatted.value = amount.value?.toString() ?? ''
+      amountFormatted.value = formRef.budget_quota?.toString() ?? ''
     }
 
     return {

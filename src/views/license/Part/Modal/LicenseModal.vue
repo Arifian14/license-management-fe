@@ -224,7 +224,6 @@ export default defineComponent({
       () => props.data,
       (val:any) => {
         if (props.mode !== "create" && val) {
-            console.log(val,"asdkhjbasdhjasjhgdasJHGD")
             license.value = {
                 id: val.id,
                 pks: val.pks,
@@ -252,7 +251,8 @@ export default defineComponent({
 
       try {
         let response;
-        const baseUrl = `${import.meta.env.VITE_APP_API_URL}/licenses`;
+        ApiService.setHeader()
+        const baseUrl = `/api/licenses`;
         if (props.mode === "edit" && data.id) {
           response = await ApiService.put(`${baseUrl}/${data.id}`, formData);
         } else {

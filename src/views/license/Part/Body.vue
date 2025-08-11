@@ -88,7 +88,8 @@ export default defineComponent({
     // GET API by ID
     const fetchDataById = async (id: string | number) => {
       try {
-        const url = `${import.meta.env.VITE_APP_API_URL}/licenses/${id}`
+        ApiService.setHeader()
+        const url = `/api/licenses/${id}`
         const response = await ApiService.get(url);
         selectedData.value = response.data.data || response.data;
         console.log(selectedData.value)

@@ -60,7 +60,8 @@ export default defineComponent({
         ];
 
         const getData = async () => {
-            const url = `${import.meta.env.VITE_APP_API_URL}/licenses`
+            ApiService.setHeader()
+            const url = `/api/licenses`
             try {
                 const response = await ApiService.query(url, {
                     params: {

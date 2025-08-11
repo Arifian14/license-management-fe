@@ -64,7 +64,8 @@ export default defineComponent({
 
 
         const getData = async () => {
-            const url = `${import.meta.env.VITE_APP_API_URL}/v2/msa`
+            ApiService.setHeader()
+            const url = `/api/v2/msa`
             try {
                 const response = await ApiService.query(url, {
                     params: {
