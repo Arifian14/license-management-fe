@@ -39,7 +39,6 @@
         >
           <img
             :src="getAssetPath('media/avatars/mbanad.jpg')"
-            alt="metronic"
             class="h-30px w-30px rounded"
           />
         </div>

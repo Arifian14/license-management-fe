@@ -3,34 +3,26 @@
         <div class="mb-5 mb-xl-8 card">
             <!-- start header -->
             <!-- Header Component -->
-            <AccidentHeader @add="handleAdd" />
-            
+            <AccidentHeader @add="handleAdd" :listAplikasi="listAplikasi" :listPIC="listPIC"/>
+
             <!-- Filter Component -->
-            <AccidentFilter 
-                v-model:selectedFilter="selectedFilter"
-                v-model:textfilter="textfilter"
-                v-model:datefilter="datefilter"
-                @search="mencariData"
-            />
-            
+            <AccidentFilter v-model:selectedFilter="selectedFilter" v-model:textfilter="textfilter"
+                v-model:datefilter="datefilter" @search="mencariData" :listAplikasi="listAplikasi"
+                :listStatus="listStatus" :listPIC="listPIC" />
+
             <!-- Body Component -->
-            <AccidentBody 
-                :columns="columns"
-                :items="items"
-                @view="view"
-                @edit="edit"
-                @remove="remove"
-            />
+            <AccidentBody :columns="columns" :items="items" @view="view" @edit="edit" @remove="remove" />
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, watch, onMounted, reactive } from "vue";
 import { useRouter } from 'vue-router';
 import AccidentHeader from "./Part/Header.vue";
 import AccidentFilter from "./Part/Filter.vue";
 import AccidentBody from "./Part/Body.vue";
+import ApiService from "@/core/services/ApiService";
 
 export default defineComponent({
     name: "pages-accident",
@@ -43,6 +35,10 @@ export default defineComponent({
         const router = useRouter();
         const selectedFilter = ref('date');
         const textfilter = ref('')
+        const listAplikasi = ref<{ label: string; value: string }[]>([]);
+        const listStatus = ref<{ label: string; value: string }[]>([]);
+        const listPIC = ref<{ label: string; value: string }[]>([]);
+        const items = ref([])
 
         const datefilter = ref({
             start: null,
@@ -50,50 +46,165 @@ export default defineComponent({
         });
 
         const columns = [
-            { key: 'tiket', label: 'No Tiket(Auto)' },
-            { key: 'tgl_entry', label: 'Tanggal Entry' },
-            { key: 'aplikasi', label: 'Aplikasi' },
-            { key: 'pic', label: 'PIC' },
-            { key: 'issue', label: 'Kode Issue' },
-            { key: 'judul', label: 'Judul' },
+            { key: 'ticketNumber', label: 'No Tiket(Auto)' },
+            { key: 'entryDate', label: 'Tanggal Entry' },
+            { key: 'application', label: 'Aplikasi'},
+            { key: 'personInCharge', label: 'PIC' },
+            { key: 'issueCode', label: 'Kode Issue' },
+            { key: 'title', label: 'Judul' },
             { key: 'status', label: 'Status', slot: 'status' },
-            { key: 'action', label: '', slot: 'action', headerClass: 'text-end rounded-end'},
+            { key: 'action', label: '', slot: 'action', headerClass: 'text-end rounded-end' },
         ];
 
-        const items = [
-            {tiket: 'TK001', tgl_entry: '2023-01-01', aplikasi: 'Appel', pic: 'Rizky', issue: 'ISS001', judul: 'Bug Login', status: 'open' },
-            {tiket: 'TK002', tgl_entry: '2023-01-02', aplikasi: 'DVC', pic: 'Deris', issue: 'ISS002', judul: 'Crash App', status: 'temp' },
-            {tiket: 'TK003', tgl_entry: '2023-01-02', aplikasi: 'MCS', pic: 'zolla', issue: 'ISS003', judul: 'Crash App', status: 'open' },
-            {tiket: 'TK004', tgl_entry: '2023-01-02', aplikasi: 'APPEL', pic: 'rizky', issue: 'ISS004', judul: 'Crash App', status: 'full' },
-        ];
+        const getData = async (params: { 
+        page: number; 
+        per_page: number;
+        entry_date_from?: string;
+        entry_date_to?: string;
+        application_id?: string;
+        pic_id?: string;
+        status_id?: string;
+        tiket_number?: string;
+        title?: string;
+        issue_code?: string
+        }) => {
+            ApiService.setHeader()
+            const respon = await ApiService.query('/api/incidents', { params })
+            items.value = respon.data.data.map(item => ({
+                ...item,
+                personInCharge: item.personInCharge.personName,
+                status: item.status.statusName,
+                application: item.application.applicationName
+            }));
+            console.log(items.value)
+        }
 
         const handleAdd = () => {
-            console.log('Tambah Data diklik');
+            getData(
+              { 
+                page: 1, 
+                per_page: 10
+              }
+            )
         };
         watch(selectedFilter, () => {
             textfilter.value = '';
         });
 
+
         const view = (row: any) => {
-            router.push({ name: 'accident-detail'});
-            console.log('View:', row);
+            router.push({ name: 'accident-detail', query: { id: row.id }});
         };
 
         const edit = (row: any) => {
-            router.push({ name: 'accident-detail', query: { mode: 'edit' }});
-            console.log('Edit:', row);
+            router.push({ name: 'accident-detail', query: { mode: 'edit', id: row.id } });
         };
 
-        const remove = (row: any) => {
-            console.log('Delete:', row);
+        const remove = () => {
+            getData(
+              { 
+                page: 1, 
+                per_page: 10
+              }
+            )
         };
-        
+
         const mencariData = () => {
-            console.log(selectedFilter.value);
-            console.log(textfilter.value);
-            console.log(datefilter.value.end);
-            console.log(datefilter.value.start);
+          if(selectedFilter.value == 'date'){
+            const isoStringStart = datefilter.value.start.toISOString();
+            const formattedDateStart = isoStringStart.slice(0, 10);
+            
+            const isoStringEnd = datefilter.value.end.toISOString();
+            const formattedDateEnd = isoStringEnd.slice(0, 10);
+            getData(
+              { 
+                page: 1, 
+                per_page: 10,
+                entry_date_from: formattedDateStart,
+                entry_date_to: formattedDateEnd
+              }
+            )
+          }else if (selectedFilter.value == 'aplikasi'){
+            getData(
+              { 
+                page: 1, 
+                per_page: 10,
+                application_id: textfilter.value,
+              }
+            )
+          }else if(selectedFilter.value == 'pic'){
+            getData(
+              { 
+                page: 1, 
+                per_page: 10,
+                pic_id: textfilter.value,
+              }
+            )
+          }else if (selectedFilter.value == 'status'){
+            getData(
+              { 
+                page: 1, 
+                per_page: 10,
+                status_id: textfilter.value,
+              }
+            )
+          }else if (selectedFilter.value == 'notiket'){
+            getData(
+              { 
+                page: 1, 
+                per_page: 10,
+                tiket_number: textfilter.value,
+              }
+            )
+          }else if (selectedFilter.value == 'judul'){
+            getData(
+              { 
+                page: 1, 
+                per_page: 10,
+                title: textfilter.value,
+              }
+            )
+          }else if (selectedFilter.value == 'issue'){
+            getData(
+              { 
+                page: 1, 
+                per_page: 10,
+                issue_code: textfilter.value
+              }
+            )
+          }
         };
+
+        const getListAplikasi = async () => {
+            const response = await ApiService.get('/api/master/applications');
+            listAplikasi.value = response.data.data.map((item: any) => ({
+                label: item.applicationName,
+                value: item.id.toString(),
+            }));
+        }
+
+        const getListStatus = async () => {
+            const response = await ApiService.get('/api/master/statuses');
+            listStatus.value = response.data.data.map((item: any) => ({
+                label: item.statusName,
+                value: item.id.toString(),
+            }));
+        }
+
+        const getListPIC = async () => {
+            const response = await ApiService.get('/api/master/person-in-charges');
+            listPIC.value = response.data.data.map((item: any) => ({
+                label: item.personName,
+                value: item.id.toString(),
+            }));
+        }
+
+        onMounted(() => {
+            getListAplikasi()
+            getListStatus()
+            getListPIC()
+            getData({ page: 1, per_page: 10 })
+        })
 
 
         return {
@@ -103,7 +214,10 @@ export default defineComponent({
             textfilter,
             columns,
             items,
-            view,edit,remove,mencariData
+            view, edit, remove, mencariData,
+            listAplikasi,
+            listStatus,
+            listPIC
         };
     },
 

@@ -2,12 +2,12 @@
     <div class="card-body py-3">
         <Table :columns="columns" :data="items">
             <template #status="{ row }">
-                <span :class="`badge badge-light-${row.status === 'open' ? 'success' :
-                    row.status === 'temp' ? 'warning' : 'primary'
+                <span :class="`badge badge-light-${row.status == 'OPEN' ? 'success' :
+                    row.status == 'TEMPORARY ACTION' ? 'warning' : 'primary'
                     } fs-7 fw-bold`">
                     {{
-                        row.status === 'open' ? 'Open' :
-                            row.status === 'temp' ? 'Temporary Action' : 'Full Action'
+                        row.status == 'OPEN' ? 'Open' :
+                            row.status == 'TEMPORARY ACTION' ? 'Temporary Action' : 'Full Action'
                     }}
                 </span>
             </template>
@@ -34,6 +34,7 @@ import { defineComponent } from "vue";
 import type { PropType } from 'vue';
 import Swal from 'sweetalert2';
 import Table from "@/components/widget/Table.vue";
+import ApiService from "@/core/services/ApiService";
 
 interface Column {
     key: string;
@@ -78,9 +79,12 @@ export default defineComponent({
         };
 
         const deleteData = (row: any) => {
-            emit('remove', row);
-            console.log('Data berhasil dihapus');
-            Swal.fire('Terhapus!', 'Data berhasil dihapus.', 'success');
+            ApiService.setHeader()
+            ApiService.delete('/api/incidents/'+row.id).
+            then(() => {
+                Swal.fire('Terhapus!', 'Data berhasil dihapus.', 'success');
+                emit('remove', row);
+            })
         };
         const emitView = (row: any) => {
             emit('view', row);
