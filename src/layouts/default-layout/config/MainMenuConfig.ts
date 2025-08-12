@@ -12,10 +12,10 @@ const MainMenuConfig: Array<MenuItem> = [
         route: "/accident",
 
       },
-      {
-        heading: "Maintance",
-        route: "/builder",
-      },
+      // {
+      //   heading: "Maintance",
+      //   route: "/builder",
+      // },
       {
         heading: "MSA",
         route: "/msa",

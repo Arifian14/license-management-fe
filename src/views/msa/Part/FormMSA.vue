@@ -455,8 +455,9 @@ export default defineComponent({
       modalMode.value = mode;
       console.log(formRef.msa)
       if (mode === 'edit') {
-        // const idx = formRef.msa.findIndex(obj => obj === row );
+        const idx = formRef.msa.findIndex(obj => obj === row );
         // await fetchDataById(idx);
+        row.id = idx + 1;
         selectedData.value = {...row}
       } else {
         const peopleQuota = parseInt(pksRef.people_quota.toString())
@@ -542,13 +543,16 @@ export default defineComponent({
     }
 
     const handleSubmitMSA = (mode,msa) => {
+      const findRole = roleData.value.find(data => data.id === msa.role_id);
       if(mode == 'create'){
-        const findRole = roleData.value.find(data => data.id === msa.role_id);
           msa['id'] = formRef.msa.length;
           msa['role'] = findRole.role;
           formRef.msa.push(msa)
         }else{
-          formRef.msa[msa.id] = msa
+          console.log(msa,'msaaaaaaaaaaaaaaaa')
+          const id = msa.id == 0 ? msa.id : msa.id - 1;
+          msa['role'] = findRole.role;
+          formRef.msa[id] = msa
         }
       tableData.value = formRef.msa;
       initCustomers.value = tableData.value;

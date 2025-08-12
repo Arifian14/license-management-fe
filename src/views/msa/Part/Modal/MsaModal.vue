@@ -169,7 +169,8 @@ export default defineComponent({
       [() => props.data, () => props.roleData],
       ([val,roleVal]) => {
         if (val.name != undefined) {
-            console.log("masuk 1 child")
+            console.log(val,'valllllllllllllllllllllllll')
+            amountFormattedBudget.value = val.rate;
             Object.assign(form, val)
         } else {
             resetForm()
