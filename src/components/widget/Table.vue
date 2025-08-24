@@ -10,7 +10,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(row, rowIndex) in data" :key="rowIndex">
+                <tr v-for="(row, rowIndex) in data" :key="rowIndex" :class="row.alert != undefined && row.alert ? 'bg bg-warning' : ''">
                     <td class="p-5">
                         <span class=" text-gray-900 fw-bold text-hover-primary d-block mb-1 fs-6">
                             {{ rowIndex + 1 }}

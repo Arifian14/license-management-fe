@@ -32,7 +32,7 @@ import MsaHeader from "./Part/Header.vue";
 import MsaFilter from "./Part/Filter.vue";
 import MsaBody from "./Part/Body.vue";
 import ApiService from "@/core/services/ApiService";
-import {formatDateToYMD,rupiahFormatter} from "../../../utils/utils"
+import {formatDateToYMD,rupiahFormatter,formatTanggal} from "../../../utils/utils"
 
 
 export default defineComponent({
@@ -62,6 +62,21 @@ export default defineComponent({
             { key: 'action', label: '', slot: 'action', headerClass: 'text-end rounded-end'},
         ];
 
+        function checkBudgetAlert(budgetQuota: number, spent: number): boolean {
+            const remaining = budgetQuota - spent;
+            const threshold = budgetQuota * 0.2; // 20% dari budget
+
+            // console.log(budgetQuota,'budgetQuota')
+            // console.log(spent,'spent')
+            // console.log(remaining,'remaining')
+            // console.log(threshold,'thres')
+            if (remaining <= threshold) {
+                return true;
+            }
+
+            return false;
+        }
+
 
         const getData = async () => {
             ApiService.setHeader()
@@ -86,15 +101,16 @@ export default defineComponent({
                 });
 
                 const data = response.data.data;
-                console.log("Data hasil API:", data);
+                console.log(data,'dataaaaaaaaaaaaaaaaaaaaaa')
                 items.value = data.map((item) => {
                     return {
                         id: item.id,
                         pks: item.pks,
-                        dateStarted: formatDateToYMD(item.dateStarted),
-                        dateEnded: formatDateToYMD(item.dateEnded),
+                        dateStarted: formatTanggal(formatDateToYMD(item.dateStarted)),
+                        dateEnded: formatTanggal(formatDateToYMD(item.dateEnded)),
                         peopleQuota: item.peopleQuota,
-                        budgetQuota: rupiahFormatter(item.budgetQuota)
+                        budgetQuota: rupiahFormatter(item.budgetQuota),
+                        alert: checkBudgetAlert(item.budgetQuota,item.budgetUsed),
                     }
                 });
             } catch (error) {

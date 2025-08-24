@@ -3,87 +3,141 @@
     <BaseModal :title="modalTitle" :modalId="modalId">
       <VForm id="msa-form" class="form" @submit="handleSubmit" :validation-schema="validationSchema">
         <!-- Form Fields -->
-        <div class="mb-3">
-          <label for="applicationFormControlInput1" class="required form-label">Name</label>
-          <Field
-            name="name"
-            type="text"
-            class="form-control form-control-solid"
-            placeholder="Name"
-            v-model="form.name"
-            :disabled="isView"
-          />
-          <div class="fv-plugins-message-container">
-            <div class="fv-help-block">
-              <ErrorMessage name="name" />
+        <div class="row">
+          <div class="col">
+            <div class="mb-3">
+              <label for="applicationFormControlInput1" class="required form-label">Name</label>
+              <Field
+                name="name"
+                type="text"
+                class="form-control form-control-solid"
+                placeholder="Name"
+                v-model="form.name"
+                :disabled="isView"
+              />
+              <div class="fv-plugins-message-container">
+                <div class="fv-help-block">
+                  <ErrorMessage name="name" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Form Fields -->
-        <div class="mb-3">
-          <label for="applicationFormControlInput1" class="required form-label">Role</label>
-          <Field name="role_id" as="select" class="form-control form-control-solid" :disabled="isView" v-model="form.role_id" @change="handleSelectionChange($event)">
-            <option v-for="opt in props.roleData" :key="opt.id" :value="opt.id">{{ opt.role }}</option>
-          </Field>
-          <div class="fv-plugins-message-container">
-            <div class="fv-help-block">
-              <ErrorMessage name="role_id" />
+        <div class="row">
+          <div class="col">
+            <!-- Form Fields -->
+            <div class="mb-3">
+              <label for="applicationFormControlInput1" class="required form-label">Role</label>
+              <Field name="role_id" as="select" class="form-control form-control-solid" :disabled="isView" v-model="form.role_id" @change="handleSelectionChange($event)">
+                <option v-for="opt in props.roleData" :key="opt.id" :value="opt.id">{{ opt.role }}</option>
+              </Field>
+              <div class="fv-plugins-message-container">
+                <div class="fv-help-block">
+                  <ErrorMessage name="role_id" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col">
+            <!-- Form Fields -->
+            <div class="mb-3">
+              <label for="applicationFormControlInput1" class="required form-label">Rate</label>
+              <input type="text" id="budget_quota" :value="rupiahFormatter(amountFormattedBudget)" class="form-control form-control-solid" placeholder="Application input" readonly />
             </div>
           </div>
         </div>
 
-        <!-- Form Fields -->
-        <div class="mb-3">
-          <label for="applicationFormControlInput1" class="required form-label">Rate</label>
-          <!-- <Field
-            name="rate"
-            type="text"
-            class="form-control form-control-solid"
-            placeholder="Rate"
-            v-model="form.rate"
-            :disabled="true"
-          />
-          <div class="fv-plugins-message-container">
-            <div class="fv-help-block">
-              <ErrorMessage name="rate" />
+        <div class="row">
+          <div class="col">
+            <!-- Form Fields -->
+            <div class="mb-3">
+              <label for="applicationFormControlInput1" class="required form-label">Project</label>
+              <Field
+                name="project"
+                type="text"
+                class="form-control form-control-solid"
+                placeholder="Project"
+                v-model="form.project"
+                :disabled="isView"
+              />
+              <div class="fv-plugins-message-container">
+                <div class="fv-help-block">
+                  <ErrorMessage name="project" />
+                </div>
+              </div>
             </div>
-          </div> -->
-          <input type="text" id="budget_quota" :value="rupiahFormatter(amountFormattedBudget)" class="form-control form-control-solid" placeholder="Application input" readonly />
-        </div>
-
-        <!-- Form Fields -->
-        <div class="mb-3">
-          <label for="applicationFormControlInput1" class="required form-label">Project</label>
-          <Field
-            name="project"
-            type="text"
-            class="form-control form-control-solid"
-            placeholder="Project"
-            v-model="form.project"
-            :disabled="isView"
-          />
-          <div class="fv-plugins-message-container">
-            <div class="fv-help-block">
-              <ErrorMessage name="project" />
+          </div>
+          <div class="col">
+            <!-- Form Fields -->
+            <div class="mb-3">
+              <label for="applicationFormControlInput1" class="required form-label">Group Position</label>
+              <Field
+                name="group_position"
+                type="text"
+                class="form-control form-control-solid"
+                placeholder="Group Position"
+                v-model="form.group_position"
+                :disabled="isView"
+              />
+              <div class="fv-plugins-message-container">
+                <div class="fv-help-block">
+                  <ErrorMessage name="group_position" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Form Fields -->
-        <div class="mb-3">
-          <label for="applicationFormControlInput1" class="required form-label">Group Position</label>
-          <Field
-            name="group_position"
-            type="text"
-            class="form-control form-control-solid"
-            placeholder="Group Position"
-            v-model="form.group_position"
-            :disabled="isView"
-          />
-          <div class="fv-plugins-message-container">
-            <div class="fv-help-block">
-              <ErrorMessage name="group_position" />
+        
+        <div class="row">
+          <div class="col">
+            <label class="required form-label">Start Join Date</label>
+            <Field
+              name="due_date_license"
+              type="date"
+              class="form-control form-control-solid"
+              placeholder="Due Date License"
+              v-model="form.join_date"
+              :disabled="isView"
+            />
+            <div class="fv-plugins-message-container">
+              <div class="fv-help-block">
+                <ErrorMessage name="due_date_license" />
+              </div>
+            </div>
+          </div>
+
+          <div class="col">
+            <label class="required form-label">Status</label>
+            <div class="d-flex">
+              <div class="form-check mx-2">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  :value=true 
+                  name="status" 
+                  v-model="form.isActive"
+                  :disabled="isView"
+                  id="flexRadioDefault1" :checked="form.isActive === true ? true : false"/>
+                <label class="form-check-label" for="flexRadioDefault1">
+                  Active
+                </label>
+              </div>
+              <div class="form-check mx-2">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  :value=false 
+                  name="status" 
+                  v-model="form.isActive"
+                  :disabled="isView"
+                  id="flexRadioDefault1" :checked="form.isActive === false ? true : false"/>
+                <label class="form-check-label" for="flexRadioDefault1">
+                  Inactive
+                </label>
+              </div>
             </div>
           </div>
         </div>
@@ -119,6 +173,8 @@ interface IMsa {
   rate: number;
   project: string;
   group_position: string;
+  join_date: string;
+  isActive: boolean;
 }
 
 
@@ -162,14 +218,15 @@ export default defineComponent({
       name: "",
       rate: 0,
       project: "",
-      group_position: ""
+      group_position: "",
+      join_date: "",
+      isActive: true,
     });
 
     watch(
       [() => props.data, () => props.roleData],
       ([val,roleVal]) => {
         if (val.name != undefined) {
-            console.log(val,'valllllllllllllllllllllllll')
             amountFormattedBudget.value = val.rate;
             Object.assign(form, val)
         } else {
@@ -193,6 +250,8 @@ export default defineComponent({
         form.rate = 0;
         form.project = "";
         form.group_position = ""
+        form.join_date = ""
+        form.isActive = true;
     }
 
     function closeModal() {

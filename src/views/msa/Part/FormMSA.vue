@@ -25,8 +25,74 @@
           </div>
           <div class="col">
             <div class="mb-10">
+              <label for="exampleFormControlInput1" class="required form-label">Date Started</label>
+              <Field 
+                  name="date_started" 
+                  type="text"
+                  v-model="pksRef.date_started" 
+                  :disabled="true"  
+                  class="form-control form-control-solid" 
+                  placeholder="Date Started"
+              />
+              <div class="fv-plugins-message-container">
+                  <div class="fv-help-block">
+                      <ErrorMessage name="date_started" />
+                  </div>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="mb-10">
+              <label for="exampleFormControlInput1" class="required form-label">Date Ended</label>
+              <Field 
+                  name="date_ended" 
+                  type="text"
+                  v-model="pksRef.date_ended" 
+                  :disabled="true" 
+                  class="form-control form-control-solid" 
+                  placeholder="Date Ended"
+              />
+              <div class="fv-plugins-message-container">
+                  <div class="fv-help-block">
+                      <ErrorMessage name="date_ended" />
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="mb-10">
               <label for="exampleFormControlInput1" class="required form-label">Budget Quota</label>
               <input type="text" id="budget_quota" :value="rupiahFormatter(pksRef.budget_quota)" class="form-control form-control-solid" placeholder="Application input" readonly />
+            </div>
+          </div>
+          <div class="col">
+            <div class="mb-10">
+              <label for="usedBudget" class="required form-label">Used Budget Quota</label>
+              <input type="text" id="usedBudget" :value="rupiahFormatter(totalUsedBudget)" class="form-control form-control-solid" placeholder="Application input" readonly />
+            </div>
+          </div>
+          <div class="col">
+            <div class="mb-10">
+              <label for="usedBudget" class="required form-label">Available Budget</label>
+              <input type="text" id="usedBudget" :value="rupiahFormatter(availableBudget)" class="form-control form-control-solid" placeholder="Application input" readonly />
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="mb-10">
+              <label for="exampleFormControlInput1" class="form-label">File PKS</label>
+              <a :href="`${pksRef.file_pks}`" target="_blank" class="btn btn-sm btn-warning" style="width: 100%;">Link File PKS</a>
+            </div>
+          </div>
+          <div class="col">
+            <div class="mb-10">
+              <label for="exampleFormControlInput1" class="form-label">File BAST</label>
+              <a :href="`${pksRef.file_bast}`" target="_blank" class="btn btn-sm btn-warning" style="width: 100%;">Link File PKS</a>
             </div>
           </div>
           <div class="col">
@@ -47,67 +113,7 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <div class="row">
           <div class="col">
-            <div class="mb-10">
-              <label for="exampleFormControlInput1" class="required form-label">Date Started</label>
-              <Field 
-                  name="date_started" 
-                  type="date"
-                  v-model="pksRef.date_started" 
-                  :disabled="true"  
-                  class="form-control form-control-solid" 
-                  placeholder="Date Started"
-              />
-              <div class="fv-plugins-message-container">
-                  <div class="fv-help-block">
-                      <ErrorMessage name="date_started" />
-                  </div>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="mb-10">
-              <label for="exampleFormControlInput1" class="required form-label">Date Ended</label>
-              <Field 
-                  name="date_ended" 
-                  type="date"
-                  v-model="pksRef.date_ended" 
-                  :disabled="true" 
-                  class="form-control form-control-solid" 
-                  placeholder="Date Ended"
-              />
-              <div class="fv-plugins-message-container">
-                  <div class="fv-help-block">
-                      <ErrorMessage name="date_ended" />
-                  </div>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="mb-10">
-              <label for="exampleFormControlInput1" class="form-label">File PKS</label>
-              <a :href="`${pksRef.file_pks}`" target="_blank" class="btn btn-sm btn-warning" style="width: 100%;">Link File PKS</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-4">
-            <div class="mb-10">
-              <label for="exampleFormControlInput1" class="form-label">File BAST</label>
-              <a :href="`${pksRef.file_bast}`" target="_blank" class="btn btn-sm btn-warning" style="width: 100%;">Link File PKS</a>
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="mb-10">
-              <label for="usedBudget" class="required form-label">Used Budget Quota</label>
-              <input type="text" id="usedBudget" :value="rupiahFormatter(totalUsedBudget)" class="form-control form-control-solid" placeholder="Application input" readonly />
-            </div>
-          </div>
-          <div class="col-4">
             <div class="mb-10">
               <label for="usedPeople" class="required form-label">Used People Quota</label>
               <input type="number" id="usedPeople" :value="totalUsedPeople" class="form-control form-control-solid" placeholder="Application input" readonly />
@@ -123,7 +129,7 @@
       <!--begin::Card title-->
       <div class="card-title">
         <!--begin::Search-->
-        <div class="d-flex align-items-center position-relative my-1">
+        <!-- <div class="d-flex align-items-center position-relative my-1">
           <KTIcon
             icon-name="magnifier"
             icon-class="fs-1 position-absolute ms-6"
@@ -135,7 +141,7 @@
             class="form-control form-control-solid w-250px ps-15"
             placeholder="Search MSA"
           />
-        </div>
+        </div> -->
         <!--end::Search-->
       </div>
       <!--begin::Card title-->
@@ -174,18 +180,25 @@
         >
           <template v-slot:name="{ row }">
             {{ row.name }}
+            <br></br>
+            {{ row.role }} | {{ row.group_position }}
+            <br></br>
+            <br></br>
+            Project : {{ row.project }}
           </template>
-          <template v-slot:role_name="{ row }">
-            {{ row.role }}
+          <template v-slot:description="{ row }">
+            Join Date : {{ formatTanggal(row.join_date) }} s/d {{ formatTanggal(row.leave_date) }}
+            <br></br>
+            Rate : {{ rupiahFormatter(row.rate) }}
+            <br></br>
+            <br></br>
+            Used Budget : {{ rupiahFormatter(row.used_budget) }}
+          </template>
+          <template v-slot:status="{ row }">
+            <span :class="row.isActive ? 'badge badge-success' : 'badge badge-danger'">{{ row.isActive ? 'Active' : 'Inactive' }}</span>
           </template>
           <template v-slot:rate="{ row }">
             {{ rupiahFormatter(row.rate) }}
-          </template>
-          <template v-slot:project="{ row }">
-            {{ row.project }}
-          </template>
-          <template v-slot:group_position="{ row }">
-            {{ row.group_position }}
           </template>
           <template v-slot:actions="{ row }">
             <div v-if="pageMode == 'view' ? false : true">
@@ -260,7 +273,7 @@ import type { Sort } from "@/components/kt-datatable//table-partials/models";
 import { MenuComponent } from "@/assets/ts/components";
 import { Modal } from 'bootstrap'
 import MSAModal from "./Modal/MsaModal.vue";
-import {formatDateToYMD,getDiffMonths,rupiahFormatter} from "../../../../utils/utils";
+import {formatDateToYMD,getDiffMonths,rupiahFormatter,dateNow,usedBudgetMSA,formatTanggal,reverseTanggal} from "../../../../utils/utils";
 import { useRoute } from 'vue-router';
 
 
@@ -269,8 +282,12 @@ interface IMSADetail {
   role_id: number;
   name: string;
   rate: number | null;
+  used_budget: number | null;
   project: string;
   group_position: string;
+  isActive: boolean;
+  join_date: string;
+  leave_date: string;
   role: string
 }
 
@@ -327,24 +344,14 @@ export default defineComponent({
         columnWidth: 175,
       },
       {
-        columnName: "Role",
-        columnLabel: "role_name",
+        columnName: "Description",
+        columnLabel: "description",
         columnWidth: 230,
       },
       {
-        columnName: "Rate",
-        columnLabel: "rate",
-        columnWidth: 230,
-      },
-      {
-        columnName: "Project",
-        columnLabel: "project",
-        columnWidth: 200,
-      },
-      {
-        columnName: "Group Position",
-        columnLabel: "group_position",
-        columnWidth: 180,
+        columnName: "Status",
+        columnLabel: "status",
+        columnWidth: 50,
       },
       {
         columnName: "Actions",
@@ -404,11 +411,14 @@ export default defineComponent({
     };
 
     const totalUsedBudget = computed(() =>{
-      const totalBudgetByNewRole = formRef.msa.reduce((sum, detail) => sum + (Number(detail.rate) || 0), 0)
-      const totalOfMonthsContract = getDiffMonths(pksRef.date_started, pksRef.date_ended);
-      return totalBudgetByNewRole * totalOfMonthsContract;
+      const totalBudgetByNewRole = formRef.msa.reduce((sum, detail) => sum + (Number(detail.used_budget) || 0), 0)
+      return totalBudgetByNewRole;
     }
     );
+
+    const availableBudget = computed(() => {
+      return pksRef.budget_quota - totalUsedBudget.value;
+    });
 
     const totalUsedPeople = computed(() => formRef.msa.length);
 
@@ -424,8 +434,8 @@ export default defineComponent({
         pksRef.pks = data.pks;
         pksRef.budget_quota = data.budgetQuota;
         pksRef.people_quota = data.peopleQuota;
-        pksRef.date_started = formatDateToYMD(data.dateStarted);
-        pksRef.date_ended = formatDateToYMD(data.dateEnded);
+        pksRef.date_started = formatTanggal(formatDateToYMD(data.dateStarted));
+        pksRef.date_ended = formatTanggal(formatDateToYMD(data.dateEnded));
         pksRef.file_bast = data.fileBast;
         pksRef.file_pks = data.filePks;
 
@@ -433,7 +443,7 @@ export default defineComponent({
 
         if(data.msaDetails.length > 0){
           formRef.msa = data.msaDetails.map((item) => {
-            return {
+            const dataDetail:any = {
               id: item.id,
               role_id: item.role.id,
               name: item.name,
@@ -441,7 +451,12 @@ export default defineComponent({
               rate: item.role.rate,
               project: item.project,
               group_position: item.groupPosition,
+              join_date: item.joinDate != undefined ? formatDateToYMD(item.joinDate) : formatDateToYMD(data.dateStarted),
+              leave_date: item.leaveDate ? formatDateToYMD(item.leaveDate) : formatDateToYMD(data.dateEnded),
+              isActive: item.isActive,
             }
+            dataDetail.used_budget = usedBudgetMSA(item.role.rate,getDiffMonths(dataDetail.join_date,dataDetail.leave_date));
+            return dataDetail;
           })
         }
         
@@ -484,18 +499,23 @@ export default defineComponent({
     const submitAPI = async (data: IMSA, pksId: string) => {
       const formData = {}
       formData['msa'] = data.msa.map((item) => {
-        return {
-          role_id: item.role_id,
-          name: item.name,
-          project: item.project,
-          group_position: item.group_position,
+        const data:any = {};
+        data.role_id = item.role_id;
+        data.name = item.name;
+        data.project = item.project;
+        data.group_position = item.group_position;
+        data.join_date = item.join_date;
+
+        if(item.isActive == false){
+          data.leave_date = item.leave_date;
         }
+
+        return data;
       })
 
       try {
           ApiService.setHeader()
           const url = `/api/v2/msa/${pksId}/details`;
-          // const response:any = await ApiService.post(url, formData);
           const response: any = await ApiService.post(url, formData);
           
           if (response?.data) {
@@ -544,12 +564,13 @@ export default defineComponent({
 
     const handleSubmitMSA = (mode,msa) => {
       const findRole = roleData.value.find(data => data.id === msa.role_id);
+      msa['leave_date'] = msa.isActive == true ? reverseTanggal(pksRef.date_ended) : dateNow();
+      msa['used_budget'] = usedBudgetMSA(msa.rate,getDiffMonths(msa.join_date,msa.leave_date));
       if(mode == 'create'){
           msa['id'] = formRef.msa.length;
           msa['role'] = findRole.role;
           formRef.msa.push(msa)
         }else{
-          console.log(msa,'msaaaaaaaaaaaaaaaa')
           const id = msa.id == 0 ? msa.id : msa.id - 1;
           msa['role'] = findRole.role;
           formRef.msa[id] = msa
@@ -616,9 +637,11 @@ export default defineComponent({
       roleData,
       totalUsedBudget,
       totalUsedPeople,
+      availableBudget,
       removeDetail,
       pageMode,
-      rupiahFormatter
+      rupiahFormatter,
+      formatTanggal
     };
   },
 });

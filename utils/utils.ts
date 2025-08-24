@@ -8,6 +8,47 @@ export function formatDateToYMD(dateString: string): string {
   return `${year}-${month}-${day}`;
 }
 
+export function dateNow(){
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0'); // bulan dimulai dari 0
+  const day = String(today.getDate()).padStart(2, '0');
+
+  const formattedDate = `${year}-${month}-${day}`;
+  return formattedDate;
+}
+
+export function formatTanggal(tanggal: string): string {
+  const bulanIndo = [
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+  ];
+
+  const [year, month, day] = tanggal.split("-").map(Number);
+
+  const namaBulan = bulanIndo[month - 1]; // index bulan dimulai dari 0
+  return `${day} ${namaBulan} ${year}`;
+}
+
+export function reverseTanggal(tanggal: string): string {
+  const bulanIndo = [
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+  ];
+
+  const [dayStr, bulanStr, yearStr] = tanggal.split(" ");
+  const day = dayStr.padStart(2, "0");
+  const month = String(bulanIndo.indexOf(bulanStr) + 1).padStart(2, "0");
+  const year = yearStr;
+
+  return `${year}-${month}-${day}`;
+}
+
+export function usedBudgetMSA(rate:number,bulan:number){
+  const totalUsedBudget = rate * bulan;
+  return totalUsedBudget == 0 ? rate : totalUsedBudget;
+}
+
 export const getDiffMonths = (dateStarted: string, dateEnded: string): number => {
   return Math.ceil(DateTime.fromISO(dateEnded).diff(DateTime.fromISO(dateStarted), 'months').months);
 };
