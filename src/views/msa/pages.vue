@@ -101,7 +101,6 @@ export default defineComponent({
                 });
 
                 const data = response.data.data;
-                console.log(data,'dataaaaaaaaaaaaaaaaaaaaaa')
                 items.value = data.map((item) => {
                     return {
                         id: item.id,
@@ -110,7 +109,7 @@ export default defineComponent({
                         dateEnded: formatTanggal(formatDateToYMD(item.dateEnded)),
                         peopleQuota: item.peopleQuota,
                         budgetQuota: rupiahFormatter(item.budgetQuota),
-                        alert: checkBudgetAlert(item.budgetQuota,item.budgetUsed),
+                        alert: item.isBudgetBelowThreshold,
                     }
                 });
             } catch (error) {

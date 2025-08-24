@@ -275,6 +275,7 @@ import { Modal } from 'bootstrap'
 import MSAModal from "./Modal/MsaModal.vue";
 import {formatDateToYMD,getDiffMonths,rupiahFormatter,dateNow,usedBudgetMSA,formatTanggal,reverseTanggal} from "../../../../utils/utils";
 import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 
 interface IMSADetail {
@@ -322,6 +323,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const route = useRoute();
+    const router = useRouter();
     const { validateField } = useForm();
     const submitButtonRef = ref<null | HTMLButtonElement>(null);
     const tableData = ref<Array<any>>([]);
@@ -527,7 +529,8 @@ export default defineComponent({
                       confirmButton: 'btn btn-success',
                   },
               });
-              fetchPKSDataById(id)
+              // fetchPKSDataById(id)
+              router.push({name:"msa"});
           }
       } catch (error:any) {
           Swal.fire({
