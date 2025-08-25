@@ -134,7 +134,8 @@ export default defineComponent({
                 "category": form.value.category,
                 "root_cause": form.value.cause,
                 "note": form.value.note,
-                "link": form.value.link
+                "link": form.value.link,
+                "deploy_date": formside.tgldeploy
             }
             console.log(payload)
             const id = idData != null ? idData.toString() : '';
