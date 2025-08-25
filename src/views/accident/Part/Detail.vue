@@ -93,7 +93,7 @@ export default defineComponent({
             formside.value.aplikasi = respon.data.data.application
             formside.value.issue = respon.data.data.issueCode
             formside.value.pic = respon.data.data.personInCharge
-            // formside.value.tgldeploy = respon.data.data.note
+            formside.value.tgldeploy = respon.data.data.deployDate
         };
         const getListAplikasi = async () => {
             const response = await ApiService.get('/api/master/applications');
@@ -135,14 +135,14 @@ export default defineComponent({
                 "root_cause": form.value.cause,
                 "note": form.value.note,
                 "link": form.value.link,
-                "deploy_date": formside.tgldeploy
+                "deploy_date": formside.value.tgldeploy
             }
             console.log(payload)
             const id = idData != null ? idData.toString() : '';
             ApiService.setHeader()
             ApiService.update('/api/incidents/', id, payload)
                 .then((response) => {
-                    Swal.fire('Terhapus!', 'Data berhasil diubah.', 'success');
+                    Swal.fire('Tersimpan!', 'Data berhasil diubah.', 'success');
                     getDetail(idData)
                     router.push({ name: 'accident-detail', query: { id: idData } });
                 })
