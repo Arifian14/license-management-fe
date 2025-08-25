@@ -56,6 +56,7 @@ export default defineComponent({
             { key: 'pks', label: 'PKS' },
             { key: 'application', label: 'Aplikasi' },
             { key: 'dueDateLicense', label: 'Due Date' },
+            { key: 'status', label: 'Status', slot:'status' },
             { key: 'action', label: '', slot: 'action', headerClass: 'text-end rounded-end'},
         ];
 
@@ -73,6 +74,7 @@ export default defineComponent({
                 const data = response.data.data;
                 console.log("Data hasil API:", data);
                 items.value = data.map(item => {
+                    let status = item.status == 'red' ? 'License expires in ≤ 1 month' : item.status == 'yellow' ? 'License expires in > 1 month and ≤ 3 months' : '';
                     return {
                         id:item.id,
                         pks:item.pks,
@@ -80,6 +82,7 @@ export default defineComponent({
                         application:item.application,
                         dueDateLicense:formatTanggal(formatDateToYMD(item.dueDateLicense)),
                         statusAlert:item.status,
+                        status:status,
                     }
                 });
             } catch (error) {

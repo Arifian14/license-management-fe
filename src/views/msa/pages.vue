@@ -59,6 +59,7 @@ export default defineComponent({
             { key: 'dateEnded', label: 'Date End' },
             { key: 'peopleQuota', label: 'People Quota' },
             { key: 'budgetQuota', label: 'Budget Quota' },
+            { key: 'status', label: 'Status',slot: 'status'  },
             { key: 'action', label: '', slot: 'action', headerClass: 'text-end rounded-end'},
         ];
 
@@ -102,6 +103,17 @@ export default defineComponent({
 
                 const data = response.data.data;
                 items.value = data.map((item) => {
+                    let statusParts: string[] = [];
+
+                    if (item.isPksExpiringSoon) {
+                        statusParts.push('PKS is Expiring Soon');
+                    }
+                    if (item.isBudgetBelowThreshold) {
+                        statusParts.push('Budget Quota ≤ 20%');
+                    }
+
+                    let status = statusParts.join(' & ');
+
                     return {
                         id: item.id,
                         pks: item.pks,
@@ -109,9 +121,13 @@ export default defineComponent({
                         dateEnded: formatTanggal(formatDateToYMD(item.dateEnded)),
                         peopleQuota: item.peopleQuota,
                         budgetQuota: rupiahFormatter(item.budgetQuota),
+                        status: status,
+                        isPksExpiringSoon: item.isPksExpiringSoon,
                         alert: item.isBudgetBelowThreshold,
                     }
                 });
+
+                console.log(data,'datadatadatadata')
             } catch (error) {
                 console.error("Error ambil data:", error);
             }

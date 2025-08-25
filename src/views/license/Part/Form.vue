@@ -144,8 +144,8 @@
                         </div>
                     </div>
                     <div class="col-md-2 d-flex align-items-end" v-if="!isView">
-                        <button class="btn btn-primary mb-1" v-if="index === 0" @click="addHealthCheck">+</button>
-                        <button class="btn btn-danger mb-1" v-else="index === 0" @click="removeHealthCheck(index)">-</button>
+                        <button type="button" class="btn btn-primary mb-1" v-if="index === 0" @click="addHealthCheck">+</button>
+                        <button type="button" class="btn btn-danger mb-1" v-else="index === 0" @click="removeHealthCheck(index)">-</button>
                     </div>
                 </div>
 
@@ -210,10 +210,8 @@ export default defineComponent({
     const router = useRouter();
     const submitButtonRef = ref<null | HTMLButtonElement>(null);
     const modalRef = ref<null | HTMLElement>(null);
-    const id = parseInt(route.params.id.toString());
     const mode = route.query.mode;
-
-    console.log(mode)
+    const id = mode == 'add' ? 0 : parseInt(route.params.id.toString());
 
     const detailSchema = Yup.object().shape({
       healthcheck_routine_date: Yup.string().required().label("Health Check Routine"),
@@ -250,7 +248,9 @@ export default defineComponent({
     });
 
     onMounted(() => {
-        fetchPKSDataById(id)
+        if(mode != 'add'){
+          fetchPKSDataById(id)
+        }
     });
 
     // GET API by ID

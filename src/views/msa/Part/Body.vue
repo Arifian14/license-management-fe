@@ -2,13 +2,8 @@
     <div class="card-body py-3">
         <Table :columns="columns" :data="items">
             <template #status="{ row }" class="bg bg-danger">
-                <span :class="`badge badge-light-${row.status === 'open' ? 'success' :
-                    row.status === 'temp' ? 'warning' : 'primary'
-                    } fs-7 fw-bold`">
-                    {{
-                        row.status === 'open' ? 'Open' :
-                            row.status === 'temp' ? 'Temporary Action' : 'Full Action'
-                    }}
+                <span :class="`badge badge-light-danger fs-7 fw-bold`">
+                    {{ row.status }}
                 </span>
             </template>
 
