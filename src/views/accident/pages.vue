@@ -11,7 +11,9 @@
                 :listStatus="listStatus" :listPIC="listPIC" />
 
             <!-- Body Component -->
-            <AccidentBody :columns="columns" :items="items" @view="view" @edit="edit" @remove="remove" />
+            <AccidentBody :columns="columns" :items="items" @view="view" @edit="edit" @remove="remove" 
+            :count="count" :itemsPerPage="itemsPerPage"
+            />
         </div>
     </div>
 </template>
@@ -39,6 +41,8 @@ export default defineComponent({
         const listStatus = ref<{ label: string; value: string }[]>([]);
         const listPIC = ref<{ label: string; value: string }[]>([]);
         const items = ref([])
+        const count = ref(0)
+        const itemsPerPage = ref(0)
 
         const datefilter = ref({
             start: null,
@@ -76,6 +80,8 @@ export default defineComponent({
                 status: item.status.statusName,
                 application: item.application.applicationName
             }));
+            count.value = respon.data.data.meta.totalCount
+            itemsPerPage.value = respon.data.data.meta.pageSize
             console.log(items.value)
         }
 
@@ -217,7 +223,7 @@ export default defineComponent({
             view, edit, remove, mencariData,
             listAplikasi,
             listStatus,
-            listPIC
+            listPIC,count,itemsPerPage
         };
     },
 
