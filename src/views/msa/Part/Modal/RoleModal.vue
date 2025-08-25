@@ -62,7 +62,7 @@ import * as Yup from "yup";
 import BaseModal from "@/components/widget/BaseModal.vue";
 import { Modal } from "bootstrap";
 import Swal from "sweetalert2/dist/sweetalert2.js";
-import {rupiahFormatter,reverseRupiahFormatter} from "../../../../../utils/utils";
+import {rupiahFormatter,reverseRupiahFormatter} from "@/utils/utils"
 
 interface IRole {
   id?: number;

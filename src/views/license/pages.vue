@@ -32,7 +32,7 @@ import LicenseHeader from "./Part/Header.vue";
 import LicenseFilter from "./Part/Filter.vue";
 import LicenseBody from "./Part/Body.vue";
 import ApiService from "@/core/services/ApiService";
-import {formatDateToYMD,formatTanggal} from "../../../utils/utils"
+import {formatDateToYMD,formatTanggal} from "@/utils/utils"
 
 export default defineComponent({
     name: "pages-accident",
@@ -72,7 +72,6 @@ export default defineComponent({
                 });
 
                 const data = response.data.data;
-                console.log("Data hasil API:", data);
                 items.value = data.map(item => {
                     let status = item.status == 'red' ? 'License expires in ≤ 1 month' : item.status == 'yellow' ? 'License expires in > 1 month and ≤ 3 months' : '';
                     return {

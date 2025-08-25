@@ -32,7 +32,7 @@ import MsaHeader from "./Part/Header.vue";
 import MsaFilter from "./Part/Filter.vue";
 import MsaBody from "./Part/Body.vue";
 import ApiService from "@/core/services/ApiService";
-import {formatDateToYMD,rupiahFormatter,formatTanggal} from "../../../utils/utils"
+import {formatDateToYMD,rupiahFormatter,formatTanggal} from "@/utils/utils"
 
 
 export default defineComponent({
@@ -66,11 +66,6 @@ export default defineComponent({
         function checkBudgetAlert(budgetQuota: number, spent: number): boolean {
             const remaining = budgetQuota - spent;
             const threshold = budgetQuota * 0.2; // 20% dari budget
-
-            // console.log(budgetQuota,'budgetQuota')
-            // console.log(spent,'spent')
-            // console.log(remaining,'remaining')
-            // console.log(threshold,'thres')
             if (remaining <= threshold) {
                 return true;
             }
@@ -126,8 +121,6 @@ export default defineComponent({
                         alert: item.isBudgetBelowThreshold,
                     }
                 });
-
-                console.log(data,'datadatadatadata')
             } catch (error) {
                 console.error("Error ambil data:", error);
             }

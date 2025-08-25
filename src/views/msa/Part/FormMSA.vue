@@ -273,7 +273,7 @@ import type { Sort } from "@/components/kt-datatable//table-partials/models";
 import { MenuComponent } from "@/assets/ts/components";
 import { Modal } from 'bootstrap'
 import MSAModal from "./Modal/MsaModal.vue";
-import {formatDateToYMD,getDiffMonths,rupiahFormatter,dateNow,usedBudgetMSA,formatTanggal,reverseTanggal} from "../../../../utils/utils";
+import {formatDateToYMD,getDiffMonths,rupiahFormatter,dateNow,usedBudgetMSA,formatTanggal,reverseTanggal} from "@/utils/utils"
 import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
 
@@ -470,7 +470,6 @@ export default defineComponent({
 
     const openModal = async (mode: 'create' | 'edit', row: any = {}) => {
       modalMode.value = mode;
-      console.log(formRef.msa)
       if (mode === 'edit') {
         const idx = formRef.msa.findIndex(obj => obj === row );
         // await fetchDataById(idx);

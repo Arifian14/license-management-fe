@@ -172,7 +172,7 @@ import BaseModal from "@/components/widget/BaseModal.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { hideModal } from "@/core/helpers/modal";
 import ApiService from "@/core/services/ApiService";
-import {formatDateToYMD} from "../../../../utils/utils";
+import {formatDateToYMD} from "@/utils/utils"
 import { useRouter } from 'vue-router';
 import { useRoute } from 'vue-router';
 
@@ -274,8 +274,6 @@ export default defineComponent({
                 healthcheck_actual_date: formatDateToYMD(item.healthcheckActualDate),
             }
         });
-
-        console.log(license.value)
 
       } catch (error) {
         console.error("Gagal mengambil data:", error);

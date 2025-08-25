@@ -155,7 +155,7 @@ import BaseModal from "@/components/widget/BaseModal.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { hideModal } from "@/core/helpers/modal";
 import ApiService from "@/core/services/ApiService";
-import {formatDateToYMD} from "../../../../../utils/utils";
+import {formatDateToYMD} from "@/utils/utils"
 import { useRouter } from 'vue-router';
 
 interface LicenseData {

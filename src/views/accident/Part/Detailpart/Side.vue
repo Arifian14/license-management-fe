@@ -84,7 +84,7 @@ import { Field } from "vee-validate";
 import type { PropType } from 'vue';
 import { useRouter } from 'vue-router';
 import Button from "@/components/widget/Button.vue";
-import {formatDateToYMD,getDiffMonths,rupiahFormatter} from "../../../../../utils/utils";
+import {formatDateToYMD,getDiffMonths,rupiahFormatter} from "@/utils/utils"
 
 interface Formside {
     status: any,
