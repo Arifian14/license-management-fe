@@ -18,6 +18,8 @@
                 :columns="columns"
                 :items="items"
                 @remove="remove"
+                @view="view"
+                @edit="edit"
             />
         </div>
     </div>
@@ -30,7 +32,7 @@ import LicenseHeader from "./Part/Header.vue";
 import LicenseFilter from "./Part/Filter.vue";
 import LicenseBody from "./Part/Body.vue";
 import ApiService from "@/core/services/ApiService";
-import {formatDateToYMD} from "../../../utils/utils"
+import {formatDateToYMD,formatTanggal} from "../../../utils/utils"
 
 export default defineComponent({
     name: "pages-accident",
@@ -54,8 +56,7 @@ export default defineComponent({
             { key: 'pks', label: 'PKS' },
             { key: 'application', label: 'Aplikasi' },
             { key: 'dueDateLicense', label: 'Due Date' },
-            { key: 'healthCheckRoutine', label: 'Health Check Routine' },
-            { key: 'healthCheckActual', label: 'Health Check Actual' },
+            { key: 'status', label: 'Status', slot:'status' },
             { key: 'action', label: '', slot: 'action', headerClass: 'text-end rounded-end'},
         ];
 
@@ -73,14 +74,15 @@ export default defineComponent({
                 const data = response.data.data;
                 console.log("Data hasil API:", data);
                 items.value = data.map(item => {
+                    let status = item.status == 'red' ? 'License expires in ≤ 1 month' : item.status == 'yellow' ? 'License expires in > 1 month and ≤ 3 months' : '';
                     return {
                         id:item.id,
                         pks:item.pks,
                         bastFileUrl:item.bastFileUrl,
                         application:item.application,
-                        dueDateLicense:formatDateToYMD(item.dueDateLicense),
-                        healthCheckRoutine:formatDateToYMD(item.healthCheckRoutine),
-                        healthCheckActual:formatDateToYMD(item.healthCheckActual),
+                        dueDateLicense:formatTanggal(formatDateToYMD(item.dueDateLicense)),
+                        statusAlert:item.status,
+                        status:status,
                     }
                 });
             } catch (error) {
@@ -110,6 +112,14 @@ export default defineComponent({
             console.log(datefilter.value.start);
         };
 
+        const view = (row: any) => {
+            router.push({ path:`/license/form/${row.id}`, query: {mode: "view"}});
+        };
+
+        const edit = (row: any) => {
+            router.push({ path:`/license/form/${row.id}`, query: {mode: "edit"}});
+        };
+
 
         return {
             handleAdd,
@@ -118,7 +128,9 @@ export default defineComponent({
             textfilter,
             columns,
             items,
-            remove,mencariData
+            remove,mencariData,
+            edit,
+            view
         };
     },
 

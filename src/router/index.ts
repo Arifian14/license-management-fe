@@ -78,6 +78,24 @@ const routes: Array<RouteRecordRaw> = [
           breadcrumbs: ["License"],
         },
       },
+      {
+        path: "/license/add",
+        name: "license_add",
+        component: () => import("@/views/license/Part/Form.vue"),
+        meta: {
+          pageTitle: "Form Add License",
+          breadcrumbs: ["License","Form"],
+        },
+      },
+      {
+        path: "/license/form/:id",
+        name: "license_form",
+        component: () => import("@/views/license/Part/Form.vue"),
+        meta: {
+          pageTitle: "Form Add License",
+          breadcrumbs: ["License","Form"],
+        },
+      },
     ],
   },
   {

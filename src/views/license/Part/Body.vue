@@ -2,17 +2,8 @@
   <div class="card-body py-3">
     <Table :columns="columns" :data="items">
       <template #status="{ row }">
-        <span
-          :class="`badge badge-light-${row.status === 'open' ? 'success' :
-            row.status === 'temp' ? 'warning' : 'primary'} fs-7 fw-bold`"
-        >
-          {{
-            row.status === 'open'
-              ? 'Open'
-              : row.status === 'temp'
-              ? 'Temporary Action'
-              : 'Full Action'
-          }}
+        <span :class="`badge badge-light-danger fs-7 fw-bold`">
+            {{ row.status }}
         </span>
       </template>
 
@@ -22,10 +13,10 @@
 
       <template #action="{ row }">
         <div class="text-end">
-          <button class="btn btn-sm btn-light me-1" @click="openModal('view', row)">
+          <button class="btn btn-sm btn-light me-1" @click="emitView(row)">
             <KTIcon icon-name="abstract-26" icon-class="fs-3" />
           </button>
-          <button class="btn btn-sm btn-light me-1" @click="openModal('edit', row)">
+          <button class="btn btn-sm btn-light me-1" @click="emitEdit(row)">
             <KTIcon icon-name="pencil" icon-class="fs-3" />
           </button>
           <button class="btn btn-sm btn-light" @click="confirmDelete(row)">
@@ -80,6 +71,7 @@ export default defineComponent({
           required: true
       }
   },
+  emits: ['view', 'edit', 'remove'],
   setup(props, { emit }) {
     const modalMode = ref<'create' | 'edit' | 'view'>('create');
     const selectedData:any = ref({});
@@ -139,13 +131,24 @@ export default defineComponent({
       }
     };
 
+    
+      const emitView = (row: any) => {
+          emit('view', row);
+      };
+
+      const emitEdit = (row: any) => {
+          emit('edit', row);
+      };
+
     return {
       modalMode,
       selectedData,
       modalRef,
       openModal,
       confirmDelete,
-      handleFormSubmit
+      handleFormSubmit,
+      emitView,
+      emitEdit
     };
   }
 });

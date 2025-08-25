@@ -13,6 +13,7 @@
           />
         </div>
       </th>
+      <th>No</th>
       <template v-for="(column, i) in header" :key="i">
         <th
           :class="{

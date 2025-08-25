@@ -32,7 +32,7 @@ import MsaHeader from "./Part/Header.vue";
 import MsaFilter from "./Part/Filter.vue";
 import MsaBody from "./Part/Body.vue";
 import ApiService from "@/core/services/ApiService";
-import {formatDateToYMD,rupiahFormatter} from "../../../utils/utils"
+import {formatDateToYMD,rupiahFormatter,formatTanggal} from "../../../utils/utils"
 
 
 export default defineComponent({
@@ -59,8 +59,24 @@ export default defineComponent({
             { key: 'dateEnded', label: 'Date End' },
             { key: 'peopleQuota', label: 'People Quota' },
             { key: 'budgetQuota', label: 'Budget Quota' },
+            { key: 'status', label: 'Status',slot: 'status'  },
             { key: 'action', label: '', slot: 'action', headerClass: 'text-end rounded-end'},
         ];
+
+        function checkBudgetAlert(budgetQuota: number, spent: number): boolean {
+            const remaining = budgetQuota - spent;
+            const threshold = budgetQuota * 0.2; // 20% dari budget
+
+            // console.log(budgetQuota,'budgetQuota')
+            // console.log(spent,'spent')
+            // console.log(remaining,'remaining')
+            // console.log(threshold,'thres')
+            if (remaining <= threshold) {
+                return true;
+            }
+
+            return false;
+        }
 
 
         const getData = async () => {
@@ -86,17 +102,32 @@ export default defineComponent({
                 });
 
                 const data = response.data.data;
-                console.log("Data hasil API:", data);
                 items.value = data.map((item) => {
+                    let statusParts: string[] = [];
+
+                    if (item.isPksExpiringSoon) {
+                        statusParts.push('PKS is Expiring Soon');
+                    }
+                    if (item.isBudgetBelowThreshold) {
+                        statusParts.push('Budget Quota ≤ 20%');
+                    }
+
+                    let status = statusParts.join(' & ');
+
                     return {
                         id: item.id,
                         pks: item.pks,
-                        dateStarted: formatDateToYMD(item.dateStarted),
-                        dateEnded: formatDateToYMD(item.dateEnded),
+                        dateStarted: formatTanggal(formatDateToYMD(item.dateStarted)),
+                        dateEnded: formatTanggal(formatDateToYMD(item.dateEnded)),
                         peopleQuota: item.peopleQuota,
-                        budgetQuota: rupiahFormatter(item.budgetQuota)
+                        budgetQuota: rupiahFormatter(item.budgetQuota),
+                        status: status,
+                        isPksExpiringSoon: item.isPksExpiringSoon,
+                        alert: item.isBudgetBelowThreshold,
                     }
                 });
+
+                console.log(data,'datadatadatadata')
             } catch (error) {
                 console.error("Error ambil data:", error);
             }
