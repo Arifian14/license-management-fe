@@ -61,7 +61,7 @@
                     placeholder="Kode Issue" />
 
                 <div class="fw-bold mt-5">Deploy Date</div>
-                <div class="text-gray-600" v-if="!isEdit">{{ formside.tgldeploy || '-' }}</div>
+                <div class="text-gray-600" v-if="!isEdit">{{ formatDateToYMD(formside.tgldeploy) || '-' }}</div>
                 <el-date-picker v-model="formside.tgldeploy" type="date" :teleported="false" placeholder="Deploy Date"
                     v-if="isEdit" />
             </div>
@@ -84,6 +84,7 @@ import { Field } from "vee-validate";
 import type { PropType } from 'vue';
 import { useRouter } from 'vue-router';
 import Button from "@/components/widget/Button.vue";
+import {formatDateToYMD,getDiffMonths,rupiahFormatter} from "../../../../../utils/utils";
 
 interface Formside {
     status: any,
@@ -134,7 +135,8 @@ export default defineComponent({
         }
         return {
             Back,
-            edit
+            edit,
+            formatDateToYMD
         }
     }
 });

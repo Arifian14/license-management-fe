@@ -93,7 +93,7 @@ export default defineComponent({
             formside.value.aplikasi = respon.data.data.application
             formside.value.issue = respon.data.data.issueCode
             formside.value.pic = respon.data.data.personInCharge
-            // formside.value.tgldeploy = respon.data.data.note
+            formside.value.tgldeploy = respon.data.data.deployDate
         };
         const getListAplikasi = async () => {
             const response = await ApiService.get('/api/master/applications');
@@ -101,6 +101,8 @@ export default defineComponent({
                 label: item.applicationName,
                 value: item.id.toString(),
             }));
+
+            
         }
 
         const getListStatus = async () => {
@@ -134,7 +136,8 @@ export default defineComponent({
                 "category": form.value.category,
                 "root_cause": form.value.cause,
                 "note": form.value.note,
-                "link": form.value.link
+                "link": form.value.link,
+                "deploy_date": formside.value.tgldeploy
             }
             console.log(payload)
             const id = idData != null ? idData.toString() : '';
