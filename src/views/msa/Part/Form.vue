@@ -64,6 +64,7 @@
                   type="date" 
                   class="form-control form-control-solid" 
                   placeholder="Date Started"
+                  :onchange="handleChangeDateStarted"
                   v-model="formRef.date_started"
               />
               <div class="fv-plugins-message-container">
@@ -77,7 +78,8 @@
             <div class="mb-10">
               <label for="exampleFormControlInput1" class="required form-label">Date Ended</label>
               <Field 
-                  name="date_ended" 
+                  name="date_ended"
+                  :min="formRef.date_started" 
                   type="date" 
                   class="form-control form-control-solid" 
                   placeholder="Date Ended"
@@ -201,6 +203,15 @@
 
     <div class="row mt-10 mb-10">
       <div class="col-3 offset-md-9 text-end">
+        <button
+          type="button"
+          @click="handleCancel"
+          id="btn-submit-msa"
+          class="btn btn-warning me-3"
+          >
+              <span class="indicator-label"> Cancel </span>
+        </button>
+
         <button
           type="submit"
           ref="submitButtonRef"
@@ -421,6 +432,38 @@ export default defineComponent({
       }
     };
 
+    const handleCancel = async () => {
+      const confirm = await Swal.fire({
+          title: 'Apakah kamu yakin?',
+          text: 'Data akan di reset',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Ya, cancel!',
+          cancelButtonText: 'Batal',
+          customClass: {
+          confirmButton: 'btn btn-primary',
+          cancelButton: 'btn btn-light',
+          },
+          buttonsStyling: false,
+      });
+
+      if (confirm.isConfirmed) {
+        resetForm()
+      }
+    }
+
+    function resetForm(){
+        formRef.pks ="",
+        formRef.date_started ="",
+        formRef.date_ended ="",
+        formRef.people_quota =0,
+        formRef.budget_quota =0,
+        formRef.file_pks ="",
+        formRef.file_bast ="",
+        formRef.roles =[]
+        amountFormatted.value = '';
+    }
+
     const handleSubmit = async () => {
       const confirm = await Swal.fire({
           title: 'Apakah kamu yakin?',
@@ -439,6 +482,10 @@ export default defineComponent({
       if (confirm.isConfirmed) {
         await submitAPI(formRef)
       }
+    }
+
+    const handleChangeDateStarted = () => {
+      formRef.date_ended = '';
     }
 
     const removeDetail = async (row: any) => {
@@ -528,6 +575,8 @@ export default defineComponent({
 
     return {
       handleSubmit,
+      handleCancel,
+      handleChangeDateStarted,
       getAssetPath,
       validationSchema,
       formRef,

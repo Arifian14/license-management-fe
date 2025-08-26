@@ -227,6 +227,15 @@
     <div class="row mt-10 mb-10" v-if="pageMode == 'view' ? false : true" >
       <div class="col-3 offset-md-9 text-end">
         <button
+          type="button"
+          @click="handleCancel"
+          id="btn-submit-msa"
+          class="btn btn-warning me-3"
+          >
+              <span class="indicator-label"> Cancel </span>
+        </button>
+        
+        <button
           type="submit"
           ref="submitButtonRef"
           id="btn-submit-msa"
@@ -252,6 +261,7 @@
     modalId="modal-msa"
     :mode="modalMode"
     :data="selectedData"
+    :dataPks="pksRef"
     :roleData="roleData"
   />
 </template>
@@ -564,6 +574,32 @@ export default defineComponent({
       }
     }
 
+    const handleCancel = async () => {
+      const confirm = await Swal.fire({
+          title: 'Apakah kamu yakin?',
+          text: 'Data akan di reset',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Ya, cancel!',
+          cancelButtonText: 'Batal',
+          customClass: {
+          confirmButton: 'btn btn-primary',
+          cancelButton: 'btn btn-light',
+          },
+          buttonsStyling: false,
+      });
+
+      if (confirm.isConfirmed) {
+        resetForm()
+
+        fetchPKSDataById(id)
+      }
+    }
+
+    function resetForm(){
+        formRef.msa = [];
+    }
+
     const handleSubmitMSA = (mode,msa) => {
       const findRole = roleData.value.find(data => data.id === msa.role_id);
       msa['leave_date'] = msa.isActive == true ? reverseTanggal(pksRef.date_ended) : dateNow();
@@ -622,6 +658,7 @@ export default defineComponent({
     return {
       getAssetPath,
       handleSubmit,
+      handleCancel,
       formRef,
       pksRef,
       validateField,

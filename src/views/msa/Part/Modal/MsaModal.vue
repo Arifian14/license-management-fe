@@ -97,6 +97,7 @@
             <Field
               name="due_date_license"
               type="date"
+              :min="form.date_started_pks"
               class="form-control form-control-solid"
               placeholder="Due Date License"
               v-model="form.join_date"
@@ -164,7 +165,7 @@ import * as Yup from "yup";
 import BaseModal from "@/components/widget/BaseModal.vue";
 import { Modal } from "bootstrap";
 import Swal from "sweetalert2/dist/sweetalert2.js";
-import {rupiahFormatter,reverseRupiahFormatter} from "@/utils/utils"
+import {rupiahFormatter,reverseRupiahFormatter,reverseTanggal} from "@/utils/utils"
 
 interface IMsa {
   id?: number;
@@ -175,6 +176,7 @@ interface IMsa {
   group_position: string;
   join_date: string;
   isActive: boolean;
+  date_started_pks: string;
 }
 
 
@@ -191,6 +193,10 @@ export default defineComponent({
       default: () => ({}),
     },
     roleData: {
+      type: Array as () => any,
+      default: () => ([]),
+    },
+    dataPks: {
       type: Array as () => any,
       default: () => ([]),
     },
@@ -221,17 +227,22 @@ export default defineComponent({
       group_position: "",
       join_date: "",
       isActive: true,
+      date_started_pks: "",
     });
 
     watch(
-      [() => props.data, () => props.roleData],
-      ([val,roleVal]) => {
+      [() => props.data, () => props.roleData,() => props.dataPks],
+      ([val,roleVal,pksVal]) => {
+        val.date_started_pks = reverseTanggal(pksVal.date_started)
+
         if (val.name != undefined) {
             amountFormattedBudget.value = val.rate;
             Object.assign(form, val)
         } else {
             resetForm()
+            form.date_started_pks = reverseTanggal(pksVal.date_started);
         }
+        console.log(form,'formmmm')
       },
       { immediate: true }
     )
@@ -252,6 +263,7 @@ export default defineComponent({
         form.group_position = ""
         form.join_date = ""
         form.isActive = true;
+        form.date_started_pks = ""
     }
 
     function closeModal() {
