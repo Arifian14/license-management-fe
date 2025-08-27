@@ -287,6 +287,10 @@ import {formatDateToYMD,getDiffMonths,rupiahFormatter,dateNow,usedBudgetMSA,form
 import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
 
+interface IDetailProjects{
+  project: string;
+  lead: string;
+}
 
 interface IMSADetail {
   id?: number;
@@ -300,6 +304,7 @@ interface IMSADetail {
   join_date: string;
   leave_date: string;
   role: string
+  projects: IDetailProjects[]
 }
 
 interface IMSA {
@@ -468,6 +473,12 @@ export default defineComponent({
               isActive: item.isActive,
             }
             dataDetail.used_budget = usedBudgetMSA(item.role.rate,getDiffMonths(dataDetail.join_date,dataDetail.leave_date));
+            dataDetail.projects?.map((item) => {
+              return {
+                project: item.project,
+                lead: item.lead,
+              }
+            });
             return dataDetail;
           })
         }
@@ -516,13 +527,14 @@ export default defineComponent({
         data.project = item.project;
         data.group_position = item.group_position;
         data.join_date = item.join_date;
+        // data.projects = item.projects;
 
         if(item.isActive == false){
           data.leave_date = item.leave_date;
         }
 
         return data;
-      })
+      });
 
       try {
           ApiService.setHeader()

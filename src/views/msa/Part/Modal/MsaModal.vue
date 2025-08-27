@@ -90,6 +90,53 @@
           </div>
         </div>
 
+        <!-- ============================================================================================================ -->
+         <div class="row" v-for="(project,index) in form.projects" :key="index">
+          <div class="col-md-5">
+            <!-- Form Fields -->
+            <div class="mb-3">
+              <label for="applicationFormControlInput1" class="required form-label">Project</label>
+              <Field
+                :name="`projects[${index}].project`"
+                type="text"
+                class="form-control form-control-solid"
+                placeholder="Project"
+                v-model="project.project"
+                :disabled="isView"
+              />
+              <div class="fv-plugins-message-container">
+                <div class="fv-help-block">
+                  <ErrorMessage :name="`projects[${index}].project`" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-5">
+            <!-- Form Fields -->
+            <div class="mb-3">
+              <label for="applicationFormControlInput1" class="required form-label">Lead</label>
+              <Field
+                :name="`projects[${index}].lead`"
+                type="text"
+                class="form-control form-control-solid"
+                placeholder="Lead Project"
+                v-model="project.lead"
+                :disabled="isView"
+              />
+              <div class="fv-plugins-message-container">
+                <div class="fv-help-block">
+                  <ErrorMessage :name="`projects[${index}].lead`" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2 d-flex align-items-end" v-if="!isView">
+              <button type="button" class="btn btn-primary mb-3" v-if="index === 0" @click="addProject">+</button>
+              <button type="button" class="btn btn-danger mb-3" v-else="index > 0"@click="removeProject(index)">-</button>
+          </div>
+        </div>
+        <!-- ============================================================================================================ -->
+
         
         <div class="row">
           <div class="col">
@@ -167,6 +214,11 @@ import { Modal } from "bootstrap";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import {rupiahFormatter,reverseRupiahFormatter,reverseTanggal} from "@/utils/utils"
 
+interface IDetailProjects{
+  project: string;
+  lead: string;
+}
+
 interface IMsa {
   id?: number;
   role_id: number;
@@ -174,12 +226,11 @@ interface IMsa {
   rate: number;
   project: string;
   group_position: string;
+  projects: IDetailProjects[]
   join_date: string;
   isActive: boolean;
   date_started_pks: string;
 }
-
-
 
 export default defineComponent({
   components: { BaseModal, Field, ErrorMessage, VForm },
@@ -211,11 +262,17 @@ export default defineComponent({
     const modalRef = ref<null | HTMLElement>(null);
     const amountFormattedBudget = ref<number>(0)
 
+    const detailSchema = Yup.object().shape({
+      project: Yup.string().required().label("Project"),
+      lead: Yup.string().required().label("Lead"),
+    });
+
     const validationSchema = Yup.object().shape({
       name: Yup.string().required(),
       role_id: Yup.number().required(),
       project: Yup.string().required(),
       group_position: Yup.string().required(),
+      projects: Yup.array().of(detailSchema).min(1, "At least one must be added")
     });
 
     const form = reactive<IMsa>({
@@ -228,6 +285,10 @@ export default defineComponent({
       join_date: "",
       isActive: true,
       date_started_pks: "",
+      projects: [{
+        project: "",
+        lead: "",
+      }]
     });
 
     watch(
@@ -264,6 +325,10 @@ export default defineComponent({
         form.join_date = ""
         form.isActive = true;
         form.date_started_pks = ""
+        form.projects = [{
+          project: "",
+          lead: "",
+        }];
     }
 
     function closeModal() {
@@ -287,6 +352,17 @@ export default defineComponent({
         amountFormattedBudget.value = selected.rate;
     }
 
+    const addProject = () => {
+      form.projects.push({
+        project: "",
+        lead: "",
+      });
+    }
+
+    const removeProject = (index) => {
+      form.projects.splice(index, 1);
+    }
+
 
 
     return {
@@ -300,7 +376,9 @@ export default defineComponent({
       handleSubmit,
       handleSelectionChange,
       rupiahFormatter,
-      amountFormattedBudget
+      amountFormattedBudget,
+      addProject,
+      removeProject
     };
   },
 });
