@@ -22,6 +22,24 @@
               </div>
             </div>
           </div>
+          <div class="col">
+            <div class="mb-3">
+              <label for="applicationFormControlInput1" class="required form-label">NIK</label>
+              <Field
+                name="nik"
+                type="text"
+                class="form-control form-control-solid"
+                placeholder="NIK"
+                v-model="form.nik"
+                :disabled="isView"
+              />
+              <div class="fv-plugins-message-container">
+                <div class="fv-help-block">
+                  <ErrorMessage name="nik" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="row">
@@ -223,6 +241,7 @@ interface IMsa {
   id?: number;
   role_id: number;
   name: string;
+  nik: string;
   rate: number;
   project: string;
   group_position: string;
@@ -279,6 +298,7 @@ export default defineComponent({
       id: 0,
       role_id: 0,
       name: "",
+      nik: "",
       rate: 0,
       project: "",
       group_position: "",
@@ -319,6 +339,7 @@ export default defineComponent({
         form.id = 0;
         form.role_id = 0;
         form.name = '';
+        form.nik = '';
         form.rate = 0;
         form.project = "";
         form.group_position = ""

@@ -464,6 +464,7 @@ export default defineComponent({
               id: item.id,
               role_id: item.role.id,
               name: item.name,
+              nik: item.nik,
               role: item.role.role,
               rate: item.role.rate,
               project: item.project,
