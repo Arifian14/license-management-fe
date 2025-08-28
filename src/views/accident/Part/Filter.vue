@@ -4,6 +4,7 @@
             <div class="row">
                 <div class="col-md-2">
                     <DropdownFilter label="Filter :" v-model="localSelectedFilter" :options="[
+                        { label: '--Filter--', value: 'nofilter' },
                         { label: 'Date', value: 'date' },
                         { label: 'Aplikasi', value: 'aplikasi' },
                         { label: 'PIC', value: 'pic' },
@@ -32,7 +33,7 @@
                     <dropdown-filter label="Search" v-model="localTextFilter" :options="listAplikasi" 
                     v-if="selectedFilter == 'aplikasi'" />
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2" v-if="selectedFilter != 'nofilter'">
                     <br>
                     <Button btnClass="btn btn-icon-white btn-active-light-primary btn-bg-primary" iconClass="fs-3"
                         icon="magnifier" :onClick="emitSearch" />

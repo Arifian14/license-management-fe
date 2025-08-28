@@ -1,6 +1,6 @@
 <template>
     <div class="card-body py-3">
-        <Table :columns="columns" :data="items">
+        <Table :columns="columns" :data="items" :npage="page">
             <template #status="{ row }">
                 <span :class="`badge badge-light-${row.status == 'OPEN' ? 'success' :
                     row.status == 'TEMPORARY ACTION' ? 'warning' : 'primary'
@@ -55,7 +55,8 @@ interface Column {
 export default defineComponent({
     name: "accident-body",
     components: {
-        Table
+        Table,
+        TablePagination
     },
     props: {
         columns: {
@@ -66,6 +67,7 @@ export default defineComponent({
             type: Array as PropType<Record<string, any>[]>,
             required: true
         },
+        //pageNow: { type: Number, required: true },
         count: { type: Number, required: false, default: 5 },
         itemsPerPage: { type: Number, default: 5 },
         itemsPerPageDropdownEnabled: {
@@ -74,7 +76,7 @@ export default defineComponent({
             default: true,
         },
         currentPage: { type: Number, required: false, default: 1 },
-        pageCount: { type: Number, required: false },
+        pageCount: { type: Number, required: true},
     },
     emits: ['view', 'edit', 'remove', "page-change", "update:itemsPerPage"],
     setup(props, { emit }) {
@@ -126,6 +128,7 @@ export default defineComponent({
                 page.value = 1;
             }
         );
+        
 
         onMounted(() => {
             inputItemsPerPage.value = props.itemsPerPage;

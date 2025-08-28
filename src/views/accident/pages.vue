@@ -11,8 +11,11 @@
                 :listStatus="listStatus" :listPIC="listPIC" />
 
             <!-- Body Component -->
-            <AccidentBody :columns="columns" :items="items" @view="view" @edit="edit" @remove="remove" 
-            :count="count" :itemsPerPage="itemsPerPage"
+            <AccidentBody 
+            v-if="items.length > 0"
+            :columns="columns" :items="items" @view="view" @edit="edit" 
+            @remove="remove" @page-change="mencariData"
+            :count="count" :itemsPerPage="itemsPerPage" :pageCount="totalPages"
             />
         </div>
     </div>
@@ -35,7 +38,7 @@ export default defineComponent({
     },
     setup() {
         const router = useRouter();
-        const selectedFilter = ref('date');
+        const selectedFilter = ref('nofilter');
         const textfilter = ref('')
         const listAplikasi = ref<{ label: string; value: string }[]>([]);
         const listStatus = ref<{ label: string; value: string }[]>([]);
@@ -43,6 +46,7 @@ export default defineComponent({
         const items = ref([])
         const count = ref(0)
         const itemsPerPage = ref(0)
+        const totalPages = ref(0)
 
         const datefilter = ref({
             start: null,
@@ -80,9 +84,10 @@ export default defineComponent({
                 status: item.status.statusName,
                 application: item.application.applicationName
             }));
-            count.value = respon.data.data.meta.totalCount
-            itemsPerPage.value = respon.data.data.meta.pageSize
-            console.log(items.value)
+            const responAPI = await respon.data.meta
+            count.value = responAPI.totalCount
+            itemsPerPage.value = responAPI.pageSize
+            totalPages.value = responAPI.totalPages
         }
 
         const handleAdd = () => {
@@ -96,6 +101,8 @@ export default defineComponent({
         watch(selectedFilter, () => {
             textfilter.value = '';
         });
+        
+        watch(() => totalPages);
 
 
         const view = (row: any) => {
@@ -114,9 +121,20 @@ export default defineComponent({
               }
             )
         };
+        
+        const pageChange = (cpage: any)=>{
+          getData(
+            {
+              page: cpage,
+              per_page: 10
+            }
+          )
+        }
 
-        const mencariData = () => {
-          if(selectedFilter.value == 'date'){
+        const mencariData = (cpage: number) => {
+          console.log(selectedFilter.value,"valuefilter")
+        
+          if(selectedFilter.value == 'date' && datefilter.value.start != null && datefilter.value.end != null){
             const isoStringStart = datefilter.value.start.toISOString();
             const formattedDateStart = isoStringStart.slice(0, 10);
             
@@ -124,7 +142,7 @@ export default defineComponent({
             const formattedDateEnd = isoStringEnd.slice(0, 10);
             getData(
               { 
-                page: 1, 
+                page: cpage, 
                 per_page: 10,
                 entry_date_from: formattedDateStart,
                 entry_date_to: formattedDateEnd
@@ -133,7 +151,7 @@ export default defineComponent({
           }else if (selectedFilter.value == 'aplikasi'){
             getData(
               { 
-                page: 1, 
+                page: cpage, 
                 per_page: 10,
                 application_id: textfilter.value,
               }
@@ -141,7 +159,7 @@ export default defineComponent({
           }else if(selectedFilter.value == 'pic'){
             getData(
               { 
-                page: 1, 
+                page: cpage, 
                 per_page: 10,
                 pic_id: textfilter.value,
               }
@@ -149,7 +167,7 @@ export default defineComponent({
           }else if (selectedFilter.value == 'status'){
             getData(
               { 
-                page: 1, 
+                page: cpage, 
                 per_page: 10,
                 status_id: textfilter.value,
               }
@@ -157,7 +175,7 @@ export default defineComponent({
           }else if (selectedFilter.value == 'notiket'){
             getData(
               { 
-                page: 1, 
+                page: cpage, 
                 per_page: 10,
                 tiket_number: textfilter.value,
               }
@@ -165,7 +183,7 @@ export default defineComponent({
           }else if (selectedFilter.value == 'judul'){
             getData(
               { 
-                page: 1, 
+                page: cpage, 
                 per_page: 10,
                 title: textfilter.value,
               }
@@ -173,9 +191,16 @@ export default defineComponent({
           }else if (selectedFilter.value == 'issue'){
             getData(
               { 
-                page: 1, 
+                page: cpage, 
                 per_page: 10,
                 issue_code: textfilter.value
+              }
+            )
+          }else {
+            getData(
+              {
+                page: cpage,
+                per_page:10
               }
             )
           }
@@ -209,7 +234,8 @@ export default defineComponent({
             getListAplikasi()
             getListStatus()
             getListPIC()
-            getData({ page: 1, per_page: 10 })
+            mencariData()
+            //getData({ page: 1, per_page: 10 })
         })
 
 
@@ -223,7 +249,9 @@ export default defineComponent({
             view, edit, remove, mencariData,
             listAplikasi,
             listStatus,
-            listPIC,count,itemsPerPage
+            listPIC,
+            count,itemsPerPage, totalPages,
+            pageChange
         };
     },
 
