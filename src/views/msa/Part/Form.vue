@@ -420,9 +420,8 @@ export default defineComponent({
               router.push({name:"msa"});
           }
       } catch (error) {
-          console.error("Error ambil data:", error);
           Swal.fire({
-              text: 'Gagal menyimpan data. Silakan coba lagi.',
+              text: 'Data failed to save. Please check your input.',
               icon: 'error',
               confirmButtonText: 'Ok, got it!',
               customClass: {

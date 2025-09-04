@@ -179,12 +179,17 @@
           checkbox-label="id"
         >
           <template v-slot:name="{ row }">
-            {{ row.name }}
+            Name : {{ row.name }}
             <br></br>
-            {{ row.role }} | {{ row.group_position }}
+            NIK : {{ row.nik }}
             <br></br>
+            Role : {{ row.role }}
             <br></br>
-            Project : {{ row.project }}
+            Grup : {{ row.group_position }}
+            <br></br>
+            Department : {{ row.department }}
+            <br></br>
+            Project : {{ row.projects?.map((v) => v.name) }}
           </template>
           <template v-slot:description="{ row }">
             Join Date : {{ formatTanggal(row.join_date) }} s/d {{ formatTanggal(row.leave_date) }}
@@ -259,8 +264,10 @@
     ref="modalMsaRef"
     @submit-msa="handleSubmitMSA"
     modalId="modal-msa"
+    modalSize="modal-lg"
     :mode="modalMode"
     :data="selectedData"
+    :dataMsa="formRef.msa"
     :dataPks="pksRef"
     :roleData="roleData"
   />
@@ -288,18 +295,20 @@ import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
 
 interface IDetailProjects{
-  project: string;
-  lead: string;
+  name: string;
+  team_leader: string;
 }
 
 interface IMSADetail {
   id?: number;
   role_id: number;
+  nik: number;
   name: string;
   rate: number | null;
   used_budget: number | null;
-  project: string;
   group_position: string;
+  department: string;
+  vendor: string;
   isActive: boolean;
   join_date: string;
   leave_date: string;
@@ -422,7 +431,7 @@ export default defineComponent({
       });
 
       if (confirm.isConfirmed) {
-        const index = formRef.msa.findIndex(obj => (obj.name === row.name && obj.project === row.project && obj.group_position === row.group_position) );
+        const index = formRef.msa.findIndex(obj => (obj.name === row.name && obj.group_position === row.group_position) );
         formRef.msa.splice(index, 1);
       }
     };
@@ -467,22 +476,25 @@ export default defineComponent({
               nik: item.nik,
               role: item.role.role,
               rate: item.role.rate,
-              project: item.project,
               group_position: item.groupPosition,
+              department: item.department,
+              vendor: item.vendor,
               join_date: item.joinDate != undefined ? formatDateToYMD(item.joinDate) : formatDateToYMD(data.dateStarted),
               leave_date: item.leaveDate ? formatDateToYMD(item.leaveDate) : formatDateToYMD(data.dateEnded),
               isActive: item.isActive,
             }
             dataDetail.used_budget = usedBudgetMSA(item.role.rate,getDiffMonths(dataDetail.join_date,dataDetail.leave_date));
-            dataDetail.projects?.map((item) => {
+            dataDetail.projects = item.projects?.map((item) => {
               return {
-                project: item.project,
-                lead: item.lead,
+                name: item.name,
+                team_leader: item.teamLeader,
               }
             });
             return dataDetail;
           })
         }
+
+        console.log(formRef,'==formRef==')
         
       } catch (error) {
         console.error("Gagal mengambil data:", error);
@@ -524,11 +536,13 @@ export default defineComponent({
       formData['msa'] = data.msa.map((item) => {
         const data:any = {};
         data.role_id = item.role_id;
+        data.nik = item.nik;
         data.name = item.name;
-        data.project = item.project;
         data.group_position = item.group_position;
+        data.department = item.department;
+        data.vendor = item.vendor;
         data.join_date = item.join_date;
-        // data.projects = item.projects;
+        data.projects = item.projects;
 
         if(item.isActive == false){
           data.leave_date = item.leave_date;
@@ -536,6 +550,7 @@ export default defineComponent({
 
         return data;
       });
+
 
       try {
           ApiService.setHeader()

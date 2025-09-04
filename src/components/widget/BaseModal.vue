@@ -6,7 +6,7 @@
     aria-hidden="true"
     ref="modalRef"
   >
-    <div class="modal-dialog modal-dialog-centered mw-650px">
+    <div :class="`modal-dialog ${modalSize == 'modal-xl' ? modalSize : 'mw-650px'}`">
       <div class="modal-content">
         <!-- Header -->
         <div class="modal-header">
@@ -46,6 +46,10 @@ export default defineComponent({
     modalId: {
       type: String,
       required: true,
+    },
+    modalSize: {
+      type: String,
+      required: false,
     },
   },
   setup() {

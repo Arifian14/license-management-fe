@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseModal :title="modalTitle" :modalId="modalId">
+    <BaseModal :title="modalTitle" :modalId="modalId" :modal-size="modalSize">
       <VForm id="msa-form" class="form" @submit="handleSubmit" :validation-schema="validationSchema">
         <!-- Form Fields -->
         <div class="row">
@@ -69,24 +69,24 @@
 
         <div class="row">
           <div class="col">
-            <!-- Form Fields -->
-            <div class="mb-3">
-              <label for="applicationFormControlInput1" class="required form-label">Project</label>
-              <Field
-                name="project"
-                type="text"
-                class="form-control form-control-solid"
-                placeholder="Project"
-                v-model="form.project"
-                :disabled="isView"
-              />
-              <div class="fv-plugins-message-container">
-                <div class="fv-help-block">
-                  <ErrorMessage name="project" />
-                </div>
+            <label class="required form-label">Start Join Date</label>
+            <Field
+              name="due_date_license"
+              type="date"
+              :min="form.date_started_pks"
+              :max="form.date_ended_pks"
+              class="form-control form-control-solid"
+              placeholder="Due Date License"
+              v-model="form.join_date"
+              :disabled="isView"
+            />
+            <div class="fv-plugins-message-container">
+              <div class="fv-help-block">
+                <ErrorMessage name="due_date_license" />
               </div>
             </div>
           </div>
+          
           <div class="col">
             <!-- Form Fields -->
             <div class="mb-3">
@@ -108,73 +108,46 @@
           </div>
         </div>
 
-        <!-- ============================================================================================================ -->
-         <div class="row" v-for="(project,index) in form.projects" :key="index">
-          <div class="col-md-5">
-            <!-- Form Fields -->
-            <div class="mb-3">
-              <label for="applicationFormControlInput1" class="required form-label">Project</label>
-              <Field
-                :name="`projects[${index}].project`"
-                type="text"
-                class="form-control form-control-solid"
-                placeholder="Project"
-                v-model="project.project"
-                :disabled="isView"
-              />
-              <div class="fv-plugins-message-container">
-                <div class="fv-help-block">
-                  <ErrorMessage :name="`projects[${index}].project`" />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-5">
-            <!-- Form Fields -->
-            <div class="mb-3">
-              <label for="applicationFormControlInput1" class="required form-label">Lead</label>
-              <Field
-                :name="`projects[${index}].lead`"
-                type="text"
-                class="form-control form-control-solid"
-                placeholder="Lead Project"
-                v-model="project.lead"
-                :disabled="isView"
-              />
-              <div class="fv-plugins-message-container">
-                <div class="fv-help-block">
-                  <ErrorMessage :name="`projects[${index}].lead`" />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-2 d-flex align-items-end" v-if="!isView">
-              <button type="button" class="btn btn-primary mb-3" v-if="index === 0" @click="addProject">+</button>
-              <button type="button" class="btn btn-danger mb-3" v-else="index > 0"@click="removeProject(index)">-</button>
-          </div>
-        </div>
-        <!-- ============================================================================================================ -->
-
-        
         <div class="row">
           <div class="col">
-            <label class="required form-label">Start Join Date</label>
+            <label class="required form-label">Department</label>
             <Field
-              name="due_date_license"
-              type="date"
-              :min="form.date_started_pks"
+              name="department"
+              type="text"
               class="form-control form-control-solid"
-              placeholder="Due Date License"
-              v-model="form.join_date"
+              placeholder="Department"
+              v-model="form.department"
               :disabled="isView"
             />
             <div class="fv-plugins-message-container">
               <div class="fv-help-block">
-                <ErrorMessage name="due_date_license" />
+                <ErrorMessage name="department" />
               </div>
             </div>
           </div>
+          
+          <div class="col">
+            <!-- Form Fields -->
+            <div class="mb-3">
+              <label for="applicationFormControlInput1" class="required form-label">Vendor</label>
+              <Field
+                name="vendor"
+                type="text"
+                class="form-control form-control-solid"
+                placeholder="Vendor"
+                v-model="form.vendor"
+                :disabled="isView"
+              />
+              <div class="fv-plugins-message-container">
+                <div class="fv-help-block">
+                  <ErrorMessage name="vendor" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
+        <div class="row">
           <div class="col">
             <label class="required form-label">Status</label>
             <div class="d-flex">
@@ -208,6 +181,99 @@
           </div>
         </div>
 
+        <!-- ============================================================================================================ -->
+         <div class="row mt-5" v-for="(project,index) in form.projects" :key="index">
+          <div class="col-md-5">
+            <!-- Form Fields -->
+            <div class="mb-3">
+              <label for="applicationFormControlInput1" class="required form-label">Project</label>
+              <Field
+                :name="`projects[${index}].name`"
+                type="text"
+                class="form-control form-control-solid"
+                placeholder="Project"
+                v-model="project.name"
+                :disabled="isView"
+              />
+              <div class="fv-plugins-message-container">
+                <div class="fv-help-block">
+                  <ErrorMessage :name="`projects[${index}].name`" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-5">
+            <!-- Form Fields -->
+            <div class="mb-3">
+              <label for="applicationFormControlInput1" class="required form-label">Leader</label>
+              <Field
+                :name="`projects[${index}].team_leader`"
+                type="text"
+                class="form-control form-control-solid"
+                placeholder="team_leader Project"
+                v-model="project.team_leader"
+                :disabled="isView"
+              />
+              <div class="fv-plugins-message-container">
+                <div class="fv-help-block">
+                  <ErrorMessage :name="`projects[${index}].team_leader`" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2 d-flex align-items-end" v-if="!isView">
+              <button type="button" class="btn btn-primary mb-3" v-if="index === 0" @click="addProject">+</button>
+              <button type="button" class="btn btn-danger mb-3" v-else="index > 0"@click="removeProject(index)">-</button>
+          </div>
+        </div>
+        <!-- ============================================================================================================ -->
+
+
+        <!-- ============================================================================================================ -->
+         <!-- <div class="row mt-5" v-for="(contract,index) in form.contracts" :key="index">
+            <div class="col-md-5">
+              <div class="mb-3">
+                <label for="applicationFormControlInput1" class="required form-label">Start Contract</label>
+                <Field
+                  :name="`contracts[${index}].start_contract`"
+                  type="date"
+                  class="form-control form-control-solid"
+                  placeholder="Start Contract"
+                  v-model="contract.start_contract"
+                  :disabled="isView"
+                />
+                <div class="fv-plugins-message-container">
+                  <div class="fv-help-block">
+                    <ErrorMessage :name="`contracts[${index}].start_contract`" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="mb-3">
+                <label for="applicationFormControlInput1" class="required form-label">End Contract</label>
+                <Field
+                  :name="`contracts[${index}].end_contract`"
+                  type="date"
+                  class="form-control form-control-solid"
+                  placeholder="End Contract"
+                  v-model="contract.end_contract"
+                  :disabled="isView"
+                />
+                <div class="fv-plugins-message-container">
+                  <div class="fv-help-block">
+                    <ErrorMessage :name="`contracts[${index}].end_contract`" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2 d-flex align-items-end" v-if="!isView">
+                <button type="button" class="btn btn-primary mb-3" v-if="index === 0" @click="addContract">+</button>
+                <button type="button" class="btn btn-danger mb-3" v-else="index > 0"@click="removeContract(index)">-</button>
+            </div>
+        </div> -->
+        <!-- ============================================================================================================ -->
+
         <div class="text-center pt-15" v-if="!isView">
           <button type="submit" ref="submitButtonRef" class="btn btn-primary me-3">
             <span class="indicator-label">Submit</span>
@@ -233,8 +299,13 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import {rupiahFormatter,reverseRupiahFormatter,reverseTanggal} from "@/utils/utils"
 
 interface IDetailProjects{
-  project: string;
-  lead: string;
+  name: string;
+  team_leader: string;
+}
+
+interface IDetailContracts{
+  start_contract: string;
+  end_contract: string;
 }
 
 interface IMsa {
@@ -243,12 +314,15 @@ interface IMsa {
   name: string;
   nik: string;
   rate: number;
-  project: string;
   group_position: string;
+  department: string;
+  vendor: string;
   projects: IDetailProjects[]
+  // contracts: IDetailContracts[]
   join_date: string;
   isActive: boolean;
   date_started_pks: string;
+  date_ended_pks: string;
 }
 
 export default defineComponent({
@@ -270,7 +344,15 @@ export default defineComponent({
       type: Array as () => any,
       default: () => ([]),
     },
+    dataMsa: {
+      type: Array as () => any,
+      default: () => ([]),
+    },
     modalId: {
+      type: String,
+      required: true,
+    },
+    modalSize: {
       type: String,
       required: true,
     },
@@ -282,15 +364,16 @@ export default defineComponent({
     const amountFormattedBudget = ref<number>(0)
 
     const detailSchema = Yup.object().shape({
-      project: Yup.string().required().label("Project"),
-      lead: Yup.string().required().label("Lead"),
+      name: Yup.string().required().label("Project"),
+      team_leader: Yup.string().required().label("team_leader"),
     });
 
     const validationSchema = Yup.object().shape({
       name: Yup.string().required(),
       role_id: Yup.number().required(),
-      project: Yup.string().required(),
       group_position: Yup.string().required(),
+      department: Yup.string().required(),
+      vendor: Yup.string().required(),
       projects: Yup.array().of(detailSchema).min(1, "At least one must be added")
     });
 
@@ -300,30 +383,42 @@ export default defineComponent({
       name: "",
       nik: "",
       rate: 0,
-      project: "",
       group_position: "",
+      department: "",
+      vendor: "",
       join_date: "",
       isActive: true,
       date_started_pks: "",
+      date_ended_pks: "",
       projects: [{
-        project: "",
-        lead: "",
-      }]
+        name: "",
+        team_leader: "",
+      }],
+      // contracts: [{
+      //   start_contract: "",
+      //   end_contract: "",
+      // }]
     });
 
-    watch(
-      [() => props.data, () => props.roleData,() => props.dataPks],
-      ([val,roleVal,pksVal]) => {
-        val.date_started_pks = reverseTanggal(pksVal.date_started)
+    const nikTemp = ref('')
 
+    const dataMsaRef = ref(<any>[])
+
+    watch(
+      [() => props.data, () => props.roleData,() => props.dataPks, ()=> props.dataMsa],
+      ([val,roleVal,pksVal,dataMsa]) => {
+        val.date_started_pks = reverseTanggal(pksVal.date_started)
+        val.date_ended_pks = reverseTanggal(pksVal.date_ended)
+
+        dataMsaRef.value = [...dataMsa];
         if (val.name != undefined) {
+            nikTemp.value = val.nik;
             amountFormattedBudget.value = val.rate;
             Object.assign(form, val)
         } else {
             resetForm()
             form.date_started_pks = reverseTanggal(pksVal.date_started);
         }
-        console.log(form,'formmmm')
       },
       { immediate: true }
     )
@@ -341,15 +436,20 @@ export default defineComponent({
         form.name = '';
         form.nik = '';
         form.rate = 0;
-        form.project = "";
         form.group_position = ""
+        form.department = ""
+        form.vendor = ""
         form.join_date = ""
         form.isActive = true;
         form.date_started_pks = ""
         form.projects = [{
-          project: "",
-          lead: "",
+          name: "",
+          team_leader: "",
         }];
+        // form.contracts = [{
+        //   start_contract: "",
+        //   end_contract: "",
+        // }]
     }
 
     function closeModal() {
@@ -361,10 +461,59 @@ export default defineComponent({
       }
     }
 
+    function hasDuplicate(data: any[]): boolean {
+      const seen = new Set<string>()
+
+      for (const item of data) {
+        const name = item.name.toLowerCase()
+        if (seen.has(name)) {
+          Swal.fire(
+            "Warning",
+            "Project duplicate.",
+            "warning"
+          )
+          return true // ketemu duplikat
+        }
+        seen.add(name)
+      }
+
+      return false // tidak ada duplikat
+    }
+
+    function isNikUnique(data: any,nik: string,): boolean {
+      if(nikTemp.value == nik){
+        return false;
+      }
+      
+      const result = data.some((item) => {
+        if(item.nik.toLowerCase() === nik.toLowerCase()){
+          return true;
+        }else{
+          return false;
+        }
+      })
+      
+
+      if(result){
+        Swal.fire(
+            "Warning",
+            "NIK duplicate.",
+            "warning"
+          )
+        return true;
+      }
+      return false;
+    }
+
 
     const handleSubmit = () => {
-      emit('submit-msa', props.mode,{...form})
-      closeModal();
+      const validateProject = hasDuplicate(form.projects)
+      const validateNik = isNikUnique(dataMsaRef.value,form.nik)
+      
+      if(!validateProject && !validateNik){
+        emit('submit-msa', props.mode,{...form})
+        closeModal();
+      }
     }
 
     const handleSelectionChange = (e) => {
@@ -375,8 +524,8 @@ export default defineComponent({
 
     const addProject = () => {
       form.projects.push({
-        project: "",
-        lead: "",
+        name: "",
+        team_leader: "",
       });
     }
 
@@ -384,7 +533,16 @@ export default defineComponent({
       form.projects.splice(index, 1);
     }
 
+    // const addContract = () => {
+    //   form.contracts.push({
+    //     start_contract: "",
+    //     end_contract: "",
+    //   });
+    // }
 
+    // const removeContract = (index) => {
+    //   form.contracts.splice(index, 1);
+    // }
 
     return {
       validationSchema,
@@ -399,7 +557,9 @@ export default defineComponent({
       rupiahFormatter,
       amountFormattedBudget,
       addProject,
-      removeProject
+      removeProject,
+      // addContract,
+      // removeContract,
     };
   },
 });
