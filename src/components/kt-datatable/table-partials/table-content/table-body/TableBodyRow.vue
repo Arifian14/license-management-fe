@@ -15,7 +15,7 @@
             />
           </div>
         </td>
-        <td>{{++i}}</td>
+        <td>{{i + 1}}</td>
         <template v-for="(properties, j) in header" :key="j">
           <td :class="{ 'text-end': j === header.length - 1 }">
             <slot :name="`${properties.columnLabel}`" :row="row">

@@ -61,7 +61,8 @@
                     placeholder="Kode Issue" />
 
                 <div class="fw-bold mt-5">Deploy Date</div>
-                <div class="text-gray-600" v-if="!isEdit">{{ formatDateToYMD(formside.tgldeploy) || '-' }}</div>
+                <!-- <div class="text-gray-600" v-if="!isEdit">{{ formatDateToYMD(formside.tgldeploy) || '-' }}</div> -->
+                <div class="text-gray-600" v-if="!isEdit">{{ formside.tgldeploy || '-' }}</div>
                 <el-date-picker v-model="formside.tgldeploy" type="date" :teleported="false" placeholder="Deploy Date"
                     v-if="isEdit" />
             </div>

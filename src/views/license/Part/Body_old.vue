@@ -1,6 +1,6 @@
 <template>
     <div class="card-body py-3">
-        <Table :columns="columns" :data="items">
+        <Table :columns="columns" :data="items" :npage="1">
             <template #status="{ row }">
                 <span :class="`badge badge-light-${row.status === 'open' ? 'success' :
                     row.status === 'temp' ? 'warning' : 'primary'

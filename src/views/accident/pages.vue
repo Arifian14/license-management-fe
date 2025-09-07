@@ -102,7 +102,10 @@ export default defineComponent({
             textfilter.value = '';
         });
         
-        watch(() => totalPages);
+        // watch(() => totalPages);
+        watch(totalPages, (newVal) => {
+          console.log("Total pages berubah:", newVal)
+        })
 
 
         const view = (row: any) => {
@@ -135,10 +138,12 @@ export default defineComponent({
           console.log(selectedFilter.value,"valuefilter")
         
           if(selectedFilter.value == 'date' && datefilter.value.start != null && datefilter.value.end != null){
-            const isoStringStart = datefilter.value.start.toISOString();
+            // const isoStringStart = datefilter.value.start.toISOString();
+            const isoStringStart = (datefilter.value.start as Date).toISOString()
             const formattedDateStart = isoStringStart.slice(0, 10);
             
-            const isoStringEnd = datefilter.value.end.toISOString();
+            // const isoStringEnd = datefilter.value.end.toISOString();
+            const isoStringEnd = (datefilter.value.end as Date).toISOString()
             const formattedDateEnd = isoStringEnd.slice(0, 10);
             getData(
               { 
@@ -234,7 +239,8 @@ export default defineComponent({
             getListAplikasi()
             getListStatus()
             getListPIC()
-            mencariData()
+            // mencariData()
+            mencariData(1)
             //getData({ page: 1, per_page: 10 })
         })
 
