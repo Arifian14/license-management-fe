@@ -210,7 +210,7 @@
                 :name="`projects[${index}].team_leader`"
                 type="text"
                 class="form-control form-control-solid"
-                placeholder="team_leader Project"
+                placeholder="Team Leader Project"
                 v-model="project.team_leader"
                 :disabled="isView"
               />

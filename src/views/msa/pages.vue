@@ -1,172 +1,74 @@
 <template>
-    <div class="row gy-5 g-xl-8">
-        <div class="mb-5 mb-xl-8 card">
-            <!-- start header -->
-            <!-- Header Component -->
-            <MsaHeader @add="handleAdd" />
-            
-            <!-- Filter Component -->
-            <!-- <MsaFilter 
-                v-model:selectedFilter="selectedFilter"
-                v-model:textfilter="textfilter"
-                v-model:datefilter="datefilter"
-                @search="mencariData"
-            /> -->
-            
-            <!-- Body Component -->
-            <MsaBody 
-                :columns="columns"
-                :items="items"
-                @view="view"
-                @edit="edit"
-                @remove="remove"
-            />
-        </div>
+  <div class="row gy-5 g-xl-8">
+    <div class="mb-5 mb-xl-8 card">
+      <MsaHeader />
+      <MsaTable 
+        :columns="columns"
+        :items="items"
+        @view="viewMsa"
+        @edit="editMsa"
+        @remove="removeMsa"
+      />
     </div>
+  </div>
 </template>
 
 <script lang="ts">
-import {onBeforeMount, onMounted, reactive, ref, watch,defineComponent} from "vue";
+import { defineComponent } from "vue";
 import { useRouter } from 'vue-router';
-import MsaHeader from "./Part/Header.vue";
-import MsaFilter from "./Part/Filter.vue";
-import MsaBody from "./Part/Body.vue";
-import ApiService from "@/core/services/ApiService";
-import {formatDateToYMD,rupiahFormatter,formatTanggal} from "@/utils/utils"
-
+import MsaHeader from "./components/MsaList/MsaHeader.vue";
+import MsaTable from "./components/MsaList/MsaTable.vue";
+import { useMsaList } from "./composables/useMsaList";
+import { useMsaApi } from "./composables/useMsaApi";
+import Swal from "sweetalert2";
 
 export default defineComponent({
-    name: "pages-msa",
-    components: {
-        MsaHeader,
-        MsaFilter,
-        MsaBody
-    },
-    setup() {
-        const router = useRouter();
-        const selectedFilter = ref('date');
-        const textfilter = ref('')
-        const items = ref([]);
+  name: "MsaPages",
+  components: {
+    MsaHeader,
+    MsaTable
+  },
+  setup() {
+    const router = useRouter();
+    const { items, columns } = useMsaList();
+    const { deleteMsa } = useMsaApi();
 
-        const datefilter = ref({
-            start: null,
-            end: null,
+    const removeMsa = async (row: any) => {
+      try {
+        await deleteMsa(row.id);
+        Swal.fire({
+          text: "MSA has been successfully deleted!",
+          icon: "success",
+          confirmButtonText: "Ok, got it!",
+          customClass: { confirmButton: "btn btn-success" },
         });
-
-        const columns = [
-            { key: 'pks', label: 'PKS' },
-            { key: 'dateStarted', label: 'Date Start' },
-            { key: 'dateEnded', label: 'Date End' },
-            { key: 'peopleQuota', label: 'People Quota' },
-            { key: 'budgetQuota', label: 'Budget Quota' },
-            { key: 'status', label: 'Status',slot: 'status'  },
-            { key: 'action', label: '', slot: 'action', headerClass: 'text-end rounded-end'},
-        ];
-
-        function checkBudgetAlert(budgetQuota: number, spent: number): boolean {
-            const remaining = budgetQuota - spent;
-            const threshold = budgetQuota * 0.2; // 20% dari budget
-            if (remaining <= threshold) {
-                return true;
-            }
-
-            return false;
-        }
-
-
-        const getData = async () => {
-            ApiService.setHeader()
-            const url = `/api/v2/msa`
-            try {
-                const response = await ApiService.query(url, {
-                    params: {
-                        pks: '',
-                        date_started_from: '',
-                        date_started_to: '',
-                        date_ended_from: '',
-                        date_ended_to: '',
-                        people_quota: '',
-                        budget_quota: '',
-                        budget_quota_from: '',
-                        budget_quota_to: '',
-                        sort_by: 'id',
-                        sort_order: 'asc',
-                        limit: '',
-                        offset: '',
-                    }
-                });
-
-                const data = response.data.data;
-                items.value = data.map((item) => {
-                    let statusParts: string[] = [];
-
-                    if (item.isPksExpiringSoon) {
-                        statusParts.push('PKS is Expiring Soon');
-                    }
-                    if (item.isBudgetBelowThreshold) {
-                        statusParts.push('Budget Quota ≤ 20%');
-                    }
-
-                    let status = statusParts.join(' & ');
-
-                    return {
-                        id: item.id,
-                        pks: item.pks,
-                        dateStarted: formatTanggal(formatDateToYMD(item.dateStarted)),
-                        dateEnded: formatTanggal(formatDateToYMD(item.dateEnded)),
-                        peopleQuota: item.peopleQuota,
-                        budgetQuota: rupiahFormatter(item.budgetQuota),
-                        status: status,
-                        isPksExpiringSoon: item.isPksExpiringSoon,
-                        alert: item.isBudgetBelowThreshold,
-                    }
-                });
-            } catch (error) {
-                console.error("Error ambil data:", error);
-            }
-        };
-
-        onBeforeMount(async () => {
-            await getData();
-        })
-
-        const handleAdd = () => {
-            console.log('Tambah Data diklik');
-        };
-        watch(selectedFilter, () => {
-            textfilter.value = '';
+        // Refresh data after deletion
+        location.reload();
+      } catch (error) {
+        Swal.fire({
+          text: "Gagal menghapus data. Silakan coba lagi.",
+          icon: "error",
+          confirmButtonText: "Ok, got it!",
+          customClass: { confirmButton: "btn btn-danger" },
         });
+      }
+    };
 
-        const view = (row: any) => {
-            router.push({ path:`/msa/add_detail/${row.id}`, query: {mode: "view"}});
-        };
+    const viewMsa = (row: any) => {
+      router.push({ path: `/msa/add_detail/${row.id}`, query: { mode: "view" } });
+    };
 
-        const edit = (row: any) => {
-            router.push({ path:`/msa/add_detail/${row.id}`, query: {mode: "edit"}});
-        };
+    const editMsa = (row: any) => {
+      router.push({ path: `/msa/add_detail/${row.id}`, query: { mode: "edit" } });
+    };
 
-        const remove = (row: any) => {
-            console.log('Delete:', row);
-        };
-        
-        const mencariData = () => {
-            console.log(selectedFilter.value);
-            console.log(textfilter.value);
-            console.log(datefilter.value.end);
-            console.log(datefilter.value.start);
-        };
-
-
-        return {
-            handleAdd,
-            selectedFilter,
-            datefilter,
-            textfilter,
-            columns,
-            items,
-            view,edit,remove,mencariData
-        };
-    },
-
+    return {
+      columns,
+      items,
+      removeMsa,
+      viewMsa,
+      editMsa
+    };
+  }
 });
 </script>
