@@ -144,7 +144,7 @@ export default defineComponent({
             ApiService.setHeader()
             ApiService.update('/api/incidents/', id, payload)
                 .then((response) => {
-                    Swal.fire('Terhapus!', 'Data berhasil diubah.', 'success');
+                    Swal.fire('Tersimpan!', 'Data berhasil diubah.', 'success');
                     getDetail(idData)
                     router.push({ name: 'accident-detail', query: { id: idData } });
                 })
