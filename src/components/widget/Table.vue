@@ -13,7 +13,7 @@
                 <tr v-for="(row, rowIndex) in data" :key="rowIndex" :class="(row.alert !== undefined && row.alert) || (row.statusAlert !== undefined && row.statusAlert === 'yellow') || (row.isPksExpiringSoon !== undefined && row.isPksExpiringSoon) ? 'bg bg-warning' : (row.statusAlert !== undefined && row.statusAlert === 'red') ? 'bg bg-danger' : ''">
                     <td class="p-5">
                         <span class=" text-gray-900 fw-bold text-hover-primary d-block mb-1 fs-6">
-                            {{ rowIndex + 1 }}
+                            {{ (npage - 1) * 10 + rowIndex + 1 }}
                         </span>
                     </td>
                     <td v-for="(col, colIndex) in columns" :key="colIndex">
@@ -49,6 +49,10 @@ export default defineComponent({
             type: Array as PropType<Record<string, any>[]>,
             required: true,
         },
+        npage:{
+          type: Number,
+          required:true
+        }
     },
 });
 </script>
