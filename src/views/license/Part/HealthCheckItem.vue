@@ -27,7 +27,7 @@
     <div class="col-md-2 d-flex align-items-end" v-if="!disabled && showActions">
       <button 
         type="button" 
-        class="btn btn-primary mb-10" 
+        class="btn btn-primary mb-3" 
         v-if="isFirst" 
         @click="$emit('add')"
       >+</button>

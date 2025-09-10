@@ -13,6 +13,7 @@ export function useMsaList() {
     start: null,
     end: null,
   });
+  const searchParams = ref({});
 
   const columns: MsaTableColumn[] = [
     { key: 'pks', label: 'PKS' },
@@ -30,24 +31,25 @@ export function useMsaList() {
     return remaining <= threshold;
   };
 
-  const getData = async () => {
+  const getData = async (params: any = {}) => {
     try {
+      const defaultParams = {
+        date_started_from: '',
+        date_started_to: '',
+        date_ended_from: '',
+        date_ended_to: '',
+        people_quota: '',
+        budget_quota: '',
+        budget_quota_from: '',
+        budget_quota_to: '',
+        sort_by: 'id',
+        sort_order: 'asc',
+        limit: '',
+        offset: '',
+      };
+      const mergedParams = { ...defaultParams, ...params };
       const response = await fetchMsaList({
-        params: {
-          pks: '',
-          date_started_from: '',
-          date_started_to: '',
-          date_ended_from: '',
-          date_ended_to: '',
-          people_quota: '',
-          budget_quota: '',
-          budget_quota_from: '',
-          budget_quota_to: '',
-          sort_by: 'id',
-          sort_order: 'asc',
-          limit: '',
-          offset: '',
-        }
+          ...mergedParams
       });
 
       const data = response.data;
@@ -84,11 +86,9 @@ export function useMsaList() {
     await getData();
   });
 
-  const mencariData = () => {
-    console.log(selectedFilter.value);
-    console.log(textfilter.value);
-    console.log(datefilter.value.end);
-    console.log(datefilter.value.start);
+  const handleSearch = (searchCriteria: any) => {
+      searchParams.value = searchCriteria;
+      getData(searchCriteria);
   };
 
   return {
@@ -100,6 +100,6 @@ export function useMsaList() {
     textfilter,
     datefilter,
     getData,
-    mencariData
+    handleSearch
   };
 }

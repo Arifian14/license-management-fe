@@ -38,7 +38,7 @@
           data-kt-menu-flip="bottom"
         >
           <img
-            :src="getAssetPath('media/avatars/mbanad.jpg')"
+            :src="getAssetPath('media/avatars/blank.png')"
             class="h-30px w-30px rounded"
           />
         </div>

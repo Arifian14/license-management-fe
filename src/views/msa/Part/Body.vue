@@ -1,5 +1,7 @@
 <template>
     <div class="card-body py-3">
+        
+
         <Table :columns="columns" :data="items" :npage="1">
             <template #status="{ row }" class="bg bg-danger">
                 <span :class="`badge badge-light-danger fs-7 fw-bold`">
@@ -25,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent,onMounted } from "vue";
+import { defineComponent,onMounted,reactive } from "vue";
 import type { PropType } from 'vue';
 import Swal from 'sweetalert2';
 import Table from "@/components/widget/Table.vue";
@@ -35,6 +37,10 @@ interface Column {
     label: string;
     slot?: string;
     headerClass?: string;
+}
+
+interface ISearch{
+  freeText: string
 }
 
 export default defineComponent({
@@ -52,8 +58,12 @@ export default defineComponent({
             required: true
         }
     },
-    emits: ['view', 'edit', 'remove'],
+    emits: ['view', 'edit', 'remove','search'],
     setup(props, { emit }) {
+        const search = reactive<ISearch>({
+            freeText: ''
+        })
+        
         const confirmDelete = async (row: any) => {
             const result = await Swal.fire({
                 title: 'Hapus Data?',
@@ -85,11 +95,19 @@ export default defineComponent({
             emit('edit', row);
         };
 
+        const handleSearch = async () => {
+            emit('search', {
+                pks: 'deris ganesha'
+            });
+        }
+
 
         return {
             emitView,
             emitEdit,
-            confirmDelete
+            confirmDelete,
+            search,
+            handleSearch
         };
     }
 });

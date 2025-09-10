@@ -1,5 +1,39 @@
 <template>
   <div class="card-body py-3">
+      <div class="row mb-3">
+        <div class="col-md-3">
+          <label for="usedBudget" class="form-label">Search Text</label>
+            <Field 
+                name="freeText" 
+                type="text"
+                v-model="search.freeText" 
+                class="form-control form-control-solid" 
+                placeholder="Search..."
+            />
+        </div>
+        <div class="col-md-3">
+            <label for="usedBudget" class="form-label">Search By</label>
+            <Field 
+                name="typeSearch" 
+                as="select"
+                v-model="search.typeSearch" 
+                class="form-control form-control-solid" 
+            >
+            <option value="" selected>== Select Search By ===</option>
+            <option v-for="opt in typeSearchs" :key="opt.id" :value="opt.id">{{ opt.desc }}</option>
+            </Field>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button
+                type="button"
+                class="btn btn-primary me-2"
+                @click="handleSearch()"
+            >
+                Search 
+            </button>
+        </div>
+      </div>
+
     <Table :columns="columns" :data="items" :npage="1">
       <template #status="{ row }">
         <span :class="`badge badge-light-${row.alert ? 'danger' : 'success'} fs-7 fw-bold`">
@@ -25,15 +59,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent,reactive } from "vue";
 import type { PropType } from "vue";
 import Table from "@/components/widget/Table.vue";
 import Swal from 'sweetalert2';
 import type { MsaTableColumn } from "../../types";
+import { Field, ErrorMessage, Form as VForm, useForm } from "vee-validate";
+
+interface ISearch{
+  freeText: string
+  typeSearch: number | null
+}
 
 export default defineComponent({
   name: "MsaTable",
-  components: { Table },
+  components: { Table,Field },
   props: {
     columns: {
       type: Array as PropType<MsaTableColumn[]>,
@@ -44,8 +84,24 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['view', 'edit', 'remove'],
+  emits: ['view', 'edit', 'remove','search'],
   setup(props, { emit }) {
+    const search = reactive<ISearch>({
+        freeText: '',
+        typeSearch: null
+    })
+    const typeSearchs = [
+      {
+        id: 1,
+        name: 'pks',
+        desc: 'PKS'
+      },
+      {
+        id:2,
+        name: 'name',
+        desc: 'MSA Name'
+      }
+    ]
     const confirmDelete = async (row: any) => {
       const result = await Swal.fire({
         title: 'Hapus Data?',
@@ -71,10 +127,22 @@ export default defineComponent({
       emit('edit', row);
     };
 
+    const handleSearch = async () => {
+        const props:any = typeSearchs.filter((v,i) => v.id == search.typeSearch)
+        const params = {};
+        if(props.length > 0 && search.freeText != null){
+          params[props[0].name] = search.freeText.trim()
+        }
+        emit('search', params);
+    }
+
     return {
       confirmDelete,
       emitView,
-      emitEdit
+      emitEdit,
+      handleSearch,
+      search,
+      typeSearchs
     };
   }
 });

@@ -8,6 +8,7 @@
         @view="viewMsa"
         @edit="editMsa"
         @remove="removeMsa"
+        @search="handleSearch"
       />
     </div>
   </div>
@@ -30,7 +31,7 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter();
-    const { items, columns } = useMsaList();
+    const { items, columns,handleSearch } = useMsaList();
     const { deleteMsa } = useMsaApi();
 
     const removeMsa = async (row: any) => {
@@ -67,7 +68,8 @@ export default defineComponent({
       items,
       removeMsa,
       viewMsa,
-      editMsa
+      editMsa,
+      handleSearch
     };
   }
 });

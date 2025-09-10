@@ -15,6 +15,8 @@ export function useLicenseForm(initialData?: LicenseData) {
     id: undefined,
     pks: "",
     application: "",
+    start_date_license: "",
+    description: "",
     due_date_license: "",
     healthchecks: [{
       healthcheck_routine_date: "",
@@ -40,6 +42,8 @@ export function useLicenseForm(initialData?: LicenseData) {
     pks: Yup.string().required().label("No PKS"),
     application: Yup.string().required().label("Application"),
     due_date_license: Yup.string().required().label("Due Date License"),
+    start_date_license: Yup.string().required().label("Start Date License"),
+    // description: Yup.string().required().label("Description"),
     file_pks: Yup.string().required().label("File PKS"),
     file_bast: Yup.string().required().label("File BAST"),
     healthchecks: Yup.array().of(detailSchema).min(1, "At least one must be added")
@@ -57,6 +61,8 @@ export function useLicenseForm(initialData?: LicenseData) {
       license.value.pks = data.pks;
       license.value.application = data.application;
       license.value.due_date_license = formatDateToYMD(data.dueDateLicense);
+      license.value.start_date_license = formatDateToYMD(data.startDateLicense);
+      license.value.description = data.description;
       license.value.file_pks = data.filePks;
       license.value.file_bast = data.fileBast;
       license.value.healthchecks = data.healthchecks.map((item) => {
@@ -76,6 +82,8 @@ export function useLicenseForm(initialData?: LicenseData) {
       pks: data.pks,
       application: data.application,
       due_date_license: data.due_date_license,
+      start_date_license: data.start_date_license,
+      description: data.description,
       healthchecks: data.healthchecks,
       file_pks: data.file_pks,
       file_bast: data.file_bast

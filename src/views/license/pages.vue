@@ -20,6 +20,7 @@
                 @remove="remove"
                 @view="view"
                 @edit="edit"
+                @search="handleSearch"
             />
         </div>
     </div>
@@ -46,6 +47,7 @@ export default defineComponent({
         const selectedFilter = ref('date');
         const textfilter = ref('')
         const items = ref([]);
+        const searchParams = ref({});
 
         const datefilter = ref({
             start: null,
@@ -60,15 +62,17 @@ export default defineComponent({
             { key: 'action', label: '', slot: 'action', headerClass: 'text-end rounded-end'},
         ];
 
-        const getData = async () => {
+        const getData = async (params: any = {}) => {
             ApiService.setHeader()
             const url = `/api/licenses`
             try {
+                const defaultParams = {
+                    offset: 1,
+                    limit: 3,
+                };
+                const mergedParams = { ...defaultParams, ...params };
                 const response = await ApiService.query(url, {
-                    params: {
-                        offset: 1,
-                        limit: 3,
-                    }
+                    params: mergedParams
                 });
 
                 const data = response.data.data;
@@ -119,6 +123,12 @@ export default defineComponent({
             router.push({ path:`/license/form/${row.id}`, query: {mode: "edit"}});
         };
 
+        // Handler untuk event search dari Body component
+        const handleSearch = (searchCriteria: any) => {
+            searchParams.value = searchCriteria;
+            getData(searchCriteria);
+        };
+
 
         return {
             handleAdd,
@@ -129,7 +139,8 @@ export default defineComponent({
             items,
             remove,mencariData,
             edit,
-            view
+            view,
+            handleSearch
         };
     },
 

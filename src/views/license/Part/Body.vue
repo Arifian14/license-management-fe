@@ -1,5 +1,40 @@
 <template>
   <div class="card-body py-3">
+    
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <label for="usedBudget" class="form-label">Search Text</label>
+          <Field 
+              name="pks" 
+              type="text"
+              v-model="search.pks" 
+              class="form-control form-control-solid" 
+              placeholder="No PKS"
+          />
+      </div>
+      <div class="col-md-3">
+        <label for="usedBudget" class="form-label">Search By</label>
+        <Field 
+            name="status" 
+            as="select"
+            v-model="search.status" 
+            class="form-control form-control-solid" 
+        >
+        <option value="" selected>== ALL ===</option>
+        <option v-for="opt in status" :key="opt.id" :value="opt.id">{{ opt.desc }}</option>
+        </Field>
+        </div>
+      <div class="col-md-2 d-flex align-items-end">
+        <button
+            type="button"
+            class="btn btn-primary me-2"
+            @click="handleSearch()"
+          >
+            Search 
+        </button>
+      </div>
+    </div>
+
     <Table :columns="columns" :data="items" :npage="1">
       <template #status="{ row }">
         <span :class="`badge badge-light-danger fs-7 fw-bold`">
@@ -38,7 +73,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, reactive, ref } from "vue";
 import type { PropType } from 'vue';
 import { Modal } from 'bootstrap'
 import Swal from 'sweetalert2';
@@ -46,6 +81,7 @@ import Table from "@/components/widget/Table.vue";
 import Button from "@/components/widget/Button.vue";
 import LicenseModal from "./Modal/LicenseModal.vue";
 import ApiService from "@/core/services/ApiService";
+import { Field, ErrorMessage, Form as VForm, useForm } from "vee-validate";
 
 interface Column {
     key: string;
@@ -54,12 +90,18 @@ interface Column {
     headerClass?: string;
 }
 
+interface ISearch{
+  status: number | null
+  pks: string | null
+}
+
 export default defineComponent({
   name: "msa-body",
   components: {
     Table,
     Button,
-    LicenseModal
+    LicenseModal,
+    Field
   },
   props: {
       columns: {
@@ -71,11 +113,31 @@ export default defineComponent({
           required: true
       }
   },
-  emits: ['view', 'edit', 'remove'],
+  emits: ['view', 'edit', 'remove','search'],
   setup(props, { emit }) {
     const modalMode = ref<'create' | 'edit' | 'view'>('create');
     const selectedData:any = ref({});
     const modalRef = ref();
+
+    const search = reactive<ISearch>({
+      status: null,
+      pks: null,
+    })
+
+    const status = [
+      {
+        id: 1,
+        name: 'under_3_months',
+        desc: 'License Under 3 Months',
+        param: 'status'
+      },
+      {
+        id: 2,
+        name: 'under_1_month',
+        desc: 'License Under 1 Month',
+        param: 'status'
+      }
+    ]
 
     // GET API by ID
     const fetchDataById = async (id: string | number) => {
@@ -90,6 +152,20 @@ export default defineComponent({
         Swal.fire("Error", "Gagal mengambil data.", "error");
       }
     };
+
+    const handleSearch = async () => {
+      const props:any = status.filter((v,i) => v.id == search.status)
+      let params = {};
+      if(props.length > 0){
+        params[props[0].param] = props[0].name
+      }
+
+      if(search.pks){
+        params['pks'] = search.pks
+      }
+
+      emit('search', params);
+    }
 
     const openModal = async (mode: 'create' | 'edit' | 'view', row: any = {}) => {
       modalMode.value = mode;
@@ -148,7 +224,10 @@ export default defineComponent({
       confirmDelete,
       handleFormSubmit,
       emitView,
-      emitEdit
+      emitEdit,
+      search,
+      handleSearch,
+      status
     };
   }
 });

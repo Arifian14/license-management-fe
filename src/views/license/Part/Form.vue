@@ -32,9 +32,9 @@
                 type="date"
                 label="Start Date License"
                 :required="true"
-                :model-value="license.due_date_license"
+                :model-value="license.start_date_license"
                 :disabled="isView"
-                @update:modelValue="license.due_date_license = $event"
+                @update:modelValue="license.start_date_license = $event"
               />
             </div>
             <div class="col-md-3">
@@ -82,13 +82,7 @@
           <div class="row">
             <div class="col-md-12">
               <label for="exampleFormControlInput1" class="form-label">Description *</label>
-              <textarea name="description" id="description" class="form-control form-control-solid"></textarea>
-
-              <div class="fv-plugins-message-container">
-                  <div class="fv-help-block">
-                      <ErrorMessage name="description" />
-                  </div>
-              </div>
+              <textarea name="description" id="description" v-model="license.description" class="form-control form-control-solid"></textarea>
             </div>
           </div>
 
@@ -109,7 +103,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { Form as VForm } from "vee-validate";
+import { Form as VForm,ErrorMessage } from "vee-validate";
 import { useLicenseForm } from "@/views/license/composables/useLicenseForm";
 import FormField from "@/components/Form/FormField.vue";
 import HealthCheckList from "@/views/license/Part/HealthCheckList.vue";
@@ -125,7 +119,8 @@ export default defineComponent({
     FormField, 
     HealthCheckList, 
     FileLinksSection, 
-    FormActions 
+    FormActions ,
+    ErrorMessage
   },
   setup() {
     const router = useRouter();
