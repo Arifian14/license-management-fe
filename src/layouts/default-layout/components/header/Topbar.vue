@@ -4,9 +4,9 @@
     <div class="topbar d-flex align-items-stretch flex-shrink-0">
 
       <!--begin::Theme mode-->
-      <div class="d-flex align-items-center ms-1 ms-lg-3">
+      <!-- <div class="d-flex align-items-center ms-1 ms-lg-3"> -->
         <!--begin::Menu toggle-->
-        <a
+        <!-- <a
           href="#"
           class="btn btn-icon btn-active-light-primary btn-custom w-30px h-30px w-md-40px h-md-40px"
           data-kt-menu-trigger="{default:'click', lg: 'hover'}"
@@ -18,10 +18,10 @@
             icon-class="theme-light-show fs-2 fs-md-1"
           />
           <KTIcon icon-name="moon" icon-class="theme-dark-show fs-2 fs-md-1" />
-        </a>
+        </a> -->
         <!--begin::Menu toggle-->
         <KTThemeModeSwitcher></KTThemeModeSwitcher>
-      </div>
+      <!-- </div> -->
       <!--end::Theme mode-->
 
       <!--begin::User-->

@@ -26,7 +26,18 @@
                 @update:modelValue="license.application = $event"
               />
             </div>
-            <div class="col-md-6">
+            <div class="col-md-3">
+              <FormField
+                name="start_date_license"
+                type="date"
+                label="Start Date License"
+                :required="true"
+                :model-value="license.due_date_license"
+                :disabled="isView"
+                @update:modelValue="license.due_date_license = $event"
+              />
+            </div>
+            <div class="col-md-3">
               <FormField
                 name="due_date_license"
                 type="date"
@@ -65,6 +76,19 @@
                 :model-value="license.file_bast"
                 @update:modelValue="license.file_bast = $event"
               />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <label for="exampleFormControlInput1" class="form-label">Description *</label>
+              <textarea name="description" id="description" class="form-control form-control-solid"></textarea>
+
+              <div class="fv-plugins-message-container">
+                  <div class="fv-help-block">
+                      <ErrorMessage name="description" />
+                  </div>
+              </div>
             </div>
           </div>
 
