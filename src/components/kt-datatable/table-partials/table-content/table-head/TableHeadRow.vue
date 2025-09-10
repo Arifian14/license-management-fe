@@ -1,6 +1,6 @@
 <template>
   <thead>
-    <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+    <tr class="text-start text-white bg-primary fw-bold fs-7 text-uppercase gs-0">
       <th v-if="checkboxEnabled" :style="{ width: '30px' }">
         <div
           class="form-check form-check-sm form-check-custom form-check-solid me-3"
@@ -13,7 +13,7 @@
           />
         </div>
       </th>
-      <th>No</th>
+      <th>&nbsp;&nbsp;No</th>
       <template v-for="(column, i) in header" :key="i">
         <th
           :class="{
@@ -26,7 +26,7 @@
             cursor: column.sortEnabled ? 'pointer' : 'auto',
           }"
         >
-          {{ column.columnName }}
+          {{ column.columnName }}&nbsp;&nbsp;
           <span
             v-if="
               columnLabelAndOrder.label === column.columnLabel &&

@@ -184,18 +184,11 @@
             NIK : {{ row.nik }}
             <br></br>
             Role : {{ row.role }}
-            <br></br>
-            Grup : {{ row.group_position }}
-            <br></br>
-            Department : {{ row.department }}
-            <br></br>
-            Project : {{ row.projects?.map((v) => v.name) }}
           </template>
           <template v-slot:description="{ row }">
             Join Date : {{ formatTanggal(row.join_date) }} s/d {{ formatTanggal(row.leave_date) }}
             <br></br>
             Rate : {{ rupiahFormatter(row.rate) }}
-            <br></br>
             <br></br>
             Used Budget : {{ rupiahFormatter(row.used_budget) }}
           </template>
@@ -215,12 +208,21 @@
                 Update 
               </button>
 
-            <button
+              <button
                 type="button"
                 class="btn btn-sm btn-danger"
                 @click="removeDetail(row)"
               >
                 Delete 
+              </button>
+            </div>
+            <div v-if="pageMode == 'view' ? true : false">
+              <button
+                type="button"
+                class="btn btn-sm btn-primary me-2"
+                @click="openModal('view',row)"
+              >
+                View 
               </button>
             </div>
             <div v-else></div>
@@ -356,7 +358,7 @@ export default defineComponent({
     const selectedIds = ref<Array<number>>([]);
     const selectedData:any = ref({});
     const roleData:any = ref([]);
-    const modalMode = ref<'create' | 'edit'>('create');
+    const modalMode = ref<'create' | 'edit' | 'view'>('create');
     const pageMode = route.query.mode;
 
     const id = parseInt(route.params.id.toString());
@@ -502,9 +504,9 @@ export default defineComponent({
       }
     };
 
-    const openModal = async (mode: 'create' | 'edit', row: any = {}) => {
+    const openModal = async (mode: 'create' | 'edit' | 'view', row: any = {}) => {
       modalMode.value = mode;
-      if (mode === 'edit') {
+      if (mode === 'edit' || 'view') {
         const idx = formRef.msa.findIndex(obj => obj === row );
         // await fetchDataById(idx);
         row.id = idx + 1;
