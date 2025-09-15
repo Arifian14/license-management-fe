@@ -15,9 +15,10 @@ export function useLicenseForm(initialData?: LicenseData) {
     id: undefined,
     pks: "",
     application: "",
-    start_date_license: "",
-    description: "",
+    date_started: "",
+    descriptions: "",
     due_date_license: "",
+    vendor_id: 0,
     healthchecks: [{
       healthcheck_routine_date: "",
       healthcheck_actual_date: "",
@@ -42,7 +43,8 @@ export function useLicenseForm(initialData?: LicenseData) {
     pks: Yup.string().required().label("No PKS"),
     application: Yup.string().required().label("Application"),
     due_date_license: Yup.string().required().label("Due Date License"),
-    start_date_license: Yup.string().required().label("Start Date License"),
+    date_started: Yup.string().required().label("Start Date License"),
+    vendor_id: Yup.number().required().label("Vendor"),
     // description: Yup.string().required().label("Description"),
     file_pks: Yup.string().required().label("File PKS"),
     file_bast: Yup.string().required().label("File BAST"),
@@ -61,8 +63,9 @@ export function useLicenseForm(initialData?: LicenseData) {
       license.value.pks = data.pks;
       license.value.application = data.application;
       license.value.due_date_license = formatDateToYMD(data.dueDateLicense);
-      license.value.start_date_license = formatDateToYMD(data.startDateLicense);
-      license.value.description = data.description;
+      license.value.date_started = formatDateToYMD(data.dateStarted);
+      license.value.descriptions = data.descriptions;
+      license.value.vendor_id = data.vendor_id;
       license.value.file_pks = data.filePks;
       license.value.file_bast = data.fileBast;
       license.value.healthchecks = data.healthchecks.map((item) => {
@@ -82,8 +85,9 @@ export function useLicenseForm(initialData?: LicenseData) {
       pks: data.pks,
       application: data.application,
       due_date_license: data.due_date_license,
-      start_date_license: data.start_date_license,
-      description: data.description,
+      date_started: data.date_started,
+      descriptions: data.descriptions,
+      vendor_id: data.vendor_id,
       healthchecks: data.healthchecks,
       file_pks: data.file_pks,
       file_bast: data.file_bast

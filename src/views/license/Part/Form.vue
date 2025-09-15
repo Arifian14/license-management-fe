@@ -28,13 +28,13 @@
             </div>
             <div class="col-md-3">
               <FormField
-                name="start_date_license"
+                name="date_started"
                 type="date"
                 label="Start Date License"
                 :required="true"
-                :model-value="license.start_date_license"
+                :model-value="license.date_started"
                 :disabled="isView"
-                @update:modelValue="license.start_date_license = $event"
+                @update:modelValue="license.date_started = $event"
               />
             </div>
             <div class="col-md-3">
@@ -76,13 +76,27 @@
                 :model-value="license.file_bast"
                 @update:modelValue="license.file_bast = $event"
               />
+              <!-- Form Fields -->
+            </div>
+            <div class="col">
+              <div class="mb-3">
+                <label for="applicationFormControlInput1" class="required form-label">Vendor</label>
+                <Field name="vendor_id" as="select" class="form-control form-control-solid" :disabled="isView" v-model="license.vendor_id">
+                  <option v-for="opt in vendorData" :key="opt.id" :value="opt.id">{{ opt.name }}</option>
+                </Field>
+                <div class="fv-plugins-message-container">
+                  <div class="fv-help-block">
+                    <ErrorMessage name="vendor_id" />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
           <div class="row">
             <div class="col-md-12">
               <label for="exampleFormControlInput1" class="form-label">Description *</label>
-              <textarea name="description" id="description" v-model="license.description" class="form-control form-control-solid"></textarea>
+              <textarea name="description" id="description" v-model="license.descriptions" class="form-control form-control-solid"></textarea>
             </div>
           </div>
 
@@ -102,8 +116,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { Form as VForm,ErrorMessage } from "vee-validate";
+import { defineComponent,onMounted,ref } from "vue";
+import { Form as VForm,ErrorMessage,Field } from "vee-validate";
 import { useLicenseForm } from "@/views/license/composables/useLicenseForm";
 import FormField from "@/components/Form/FormField.vue";
 import HealthCheckList from "@/views/license/Part/HealthCheckList.vue";
@@ -111,6 +125,7 @@ import FileLinksSection from "@/views/license/Part/FileLinksSection.vue";
 import FormActions from "@/views/license/Part/FormActions.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { useRouter } from 'vue-router';
+import ApiService from "@/core/services/ApiService";
 
 export default defineComponent({
   name: "LicenseForm",
@@ -119,11 +134,13 @@ export default defineComponent({
     FormField, 
     HealthCheckList, 
     FileLinksSection, 
-    FormActions ,
+    FormActions,
+    Field,
     ErrorMessage
   },
   setup() {
     const router = useRouter();
+    const vendorData:any = ref([]);
     const {
       license,
       isView,
@@ -172,11 +189,32 @@ export default defineComponent({
       }
     };
 
+    const fetchVendor = async () => {
+      try {
+        ApiService.setHeader()
+        const url = `/api/master`
+        const params = {
+          type:'vendor_application'
+        }
+        const response = await ApiService.query(url,{params});
+        const data = response.data.data;
+        vendorData.value = data;
+      } catch (error) {
+        console.error("Gagal mengambil data:", error);
+        Swal.fire("Error", "Gagal mengambil data.", "error");
+      }
+    }
+
+    onMounted(() => {
+      fetchVendor()
+    })
+
     return {
       license,
       isView,
       validationSchema,
       handleSubmit,
+      vendorData,
       addHealthCheck,
       removeHealthCheck,
       updateHealthCheck

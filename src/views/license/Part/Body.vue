@@ -54,21 +54,15 @@
           <button class="btn btn-sm btn-light me-1" @click="emitEdit(row)">
             <KTIcon icon-name="pencil" icon-class="fs-3" />
           </button>
-          <button class="btn btn-sm btn-light" @click="confirmDelete(row)">
+          <!-- <button class="btn btn-sm btn-light" @click="confirmDelete(row)">
             <KTIcon icon-name="trash" icon-class="fs-3" />
-          </button>
+          </button> -->
         </div>
       </template>
     </Table>
+    <TablePagination v-if="pageCount > 1" :total-pages="pageCount" :total="count" :per-page="itemsPerPage"
+            :current-page="page" @page-change="pageChange" />
 
-    <!-- Modal Komponen -->
-    <LicenseModal
-      ref="modalRef"
-      modalId="tambah-license"
-      :mode="modalMode"
-      :data="selectedData"
-      @submit="handleFormSubmit"
-    />
   </div>
 </template>
 
@@ -78,6 +72,7 @@ import type { PropType } from 'vue';
 import { Modal } from 'bootstrap'
 import Swal from 'sweetalert2';
 import Table from "@/components/widget/Table.vue";
+import TablePagination from "@/components/widget/TablePagination.vue";
 import Button from "@/components/widget/Button.vue";
 import LicenseModal from "./Modal/LicenseModal.vue";
 import ApiService from "@/core/services/ApiService";
@@ -101,6 +96,7 @@ export default defineComponent({
     Table,
     Button,
     LicenseModal,
+    TablePagination,
     Field
   },
   props: {
@@ -111,10 +107,20 @@ export default defineComponent({
       items: {
           type: Array as PropType<Record<string, any>[]>,
           required: true
-      }
+      },
+      count: { type: Number, required: false, default: 5 },
+      itemsPerPage: { type: Number, default: 5 },
+      itemsPerPageDropdownEnabled: {
+          type: Boolean,
+          required: false,
+          default: true,
+      },
+      currentPage: { type: Number, required: false, default: 1 },
+      pageCount: { type: Number, required: true},
   },
-  emits: ['view', 'edit', 'remove','search'],
+  emits: ['view', 'edit', 'remove','search','page-change'],
   setup(props, { emit }) {
+    const page = ref(props.currentPage);
     const modalMode = ref<'create' | 'edit' | 'view'>('create');
     const selectedData:any = ref({});
     const modalRef = ref();
@@ -216,6 +222,20 @@ export default defineComponent({
           emit('edit', row);
       };
 
+      const pageChange = (newPage: number) => {
+        const props:any = status.filter((v,i) => v.id == search.status)
+        let params = {};
+        if(props.length > 0){
+          params[props[0].param] = props[0].name
+        }
+
+        if(search.pks){
+          params['pks'] = search.pks
+        }
+        page.value = newPage;
+        emit("page-change", page.value,params);
+      };
+
     return {
       modalMode,
       selectedData,
@@ -227,7 +247,9 @@ export default defineComponent({
       emitEdit,
       search,
       handleSearch,
-      status
+      status,
+      pageChange,
+      page
     };
   }
 });

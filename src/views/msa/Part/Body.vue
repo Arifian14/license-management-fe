@@ -17,9 +17,9 @@
                     <button class="btn btn-sm btn-light me-1" @click="emitEdit(row)">
                         <KTIcon icon-name="pencil" icon-class="fs-3" />
                     </button>
-                    <button class="btn btn-sm btn-light" @click="confirmDelete(row)">
+                    <!-- <button class="btn btn-sm btn-light" @click="confirmDelete(row)">
                         <KTIcon icon-name="trash" icon-class="fs-3" />
-                    </button>
+                    </button> -->
                 </div>
             </template>
         </Table>

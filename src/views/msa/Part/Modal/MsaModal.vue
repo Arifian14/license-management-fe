@@ -88,20 +88,14 @@
           </div>
           
           <div class="col">
-            <!-- Form Fields -->
             <div class="mb-3">
               <label for="applicationFormControlInput1" class="required form-label">Group Position</label>
-              <Field
-                name="group_position"
-                type="text"
-                class="form-control form-control-solid"
-                placeholder="Group Position"
-                v-model="form.group_position"
-                :disabled="isView"
-              />
+              <Field name="group_id" as="select" class="form-control form-control-solid" :disabled="isView" v-model="form.group_id" @change="handleSelectionGroupChange($event)">
+                <option v-for="opt in props.groupData" :key="opt.id" :value="opt.id">{{ opt.name }}</option>
+              </Field>
               <div class="fv-plugins-message-container">
                 <div class="fv-help-block">
-                  <ErrorMessage name="group_position" />
+                  <ErrorMessage name="group_id" />
                 </div>
               </div>
             </div>
@@ -110,18 +104,15 @@
 
         <div class="row">
           <div class="col">
-            <label class="required form-label">Department</label>
-            <Field
-              name="department"
-              type="text"
-              class="form-control form-control-solid"
-              placeholder="Department"
-              v-model="form.department"
-              :disabled="isView"
-            />
-            <div class="fv-plugins-message-container">
-              <div class="fv-help-block">
-                <ErrorMessage name="department" />
+            <div class="mb-3">
+              <label for="applicationFormControlInput1" class="required form-label">Department</label>
+              <Field name="department_id" as="select" class="form-control form-control-solid" :disabled="isView" v-model="form.department_id">
+                <option v-for="opt in departmentData" :key="opt.id" :value="opt.id">{{ opt.name }}</option>
+              </Field>
+              <div class="fv-plugins-message-container">
+                <div class="fv-help-block">
+                  <ErrorMessage name="department_id" />
+                </div>
               </div>
             </div>
           </div>
@@ -130,17 +121,12 @@
             <!-- Form Fields -->
             <div class="mb-3">
               <label for="applicationFormControlInput1" class="required form-label">Vendor</label>
-              <Field
-                name="vendor"
-                type="text"
-                class="form-control form-control-solid"
-                placeholder="Vendor"
-                v-model="form.vendor"
-                :disabled="isView"
-              />
+              <Field name="vendor_id" as="select" class="form-control form-control-solid" :disabled="isView" v-model="form.vendor_id">
+                <option v-for="opt in vendorData" :key="opt.id" :value="opt.id">{{ opt.name }}</option>
+              </Field>
               <div class="fv-plugins-message-container">
                 <div class="fv-help-block">
-                  <ErrorMessage name="vendor" />
+                  <ErrorMessage name="vendor_id" />
                 </div>
               </div>
             </div>
@@ -180,6 +166,8 @@
             </div>
           </div>
         </div>
+
+        <hr>
 
         <!-- ============================================================================================================ -->
          <div class="row mt-5" v-for="(project,index) in form.projects" :key="index">
@@ -314,9 +302,9 @@ interface IMsa {
   name: string;
   nik: string;
   rate: number;
-  group_position: string;
-  department: string;
-  vendor: string;
+  group_id: number;
+  department_id: number;
+  vendor_id: number;
   projects: IDetailProjects[]
   // contracts: IDetailContracts[]
   join_date: string;
@@ -337,6 +325,14 @@ export default defineComponent({
       default: () => ({}),
     },
     roleData: {
+      type: Array as () => any,
+      default: () => ([]),
+    },
+    groupData: {
+      type: Array as () => any,
+      default: () => ([]),
+    },
+    vendorData: {
       type: Array as () => any,
       default: () => ([]),
     },
@@ -362,6 +358,7 @@ export default defineComponent({
     const submitButtonRef = ref<null | HTMLButtonElement>(null);
     const modalRef = ref<null | HTMLElement>(null);
     const amountFormattedBudget = ref<number>(0)
+    const departmentData = ref<any>([])
 
     const detailSchema = Yup.object().shape({
       name: Yup.string().required().label("Project"),
@@ -371,9 +368,9 @@ export default defineComponent({
     const validationSchema = Yup.object().shape({
       name: Yup.string().required(),
       role_id: Yup.number().required(),
-      group_position: Yup.string().required(),
-      department: Yup.string().required(),
-      vendor: Yup.string().required(),
+      group_id: Yup.number().required(),
+      department_id: Yup.number().required(),
+      vendor_id: Yup.number().required(),
       projects: Yup.array().of(detailSchema).min(1, "At least one must be added")
     });
 
@@ -383,9 +380,9 @@ export default defineComponent({
       name: "",
       nik: "",
       rate: 0,
-      group_position: "",
-      department: "",
-      vendor: "",
+      group_id: 0,
+      department_id: 0,
+      vendor_id: 0,
       join_date: "",
       isActive: true,
       date_started_pks: "",
@@ -436,9 +433,9 @@ export default defineComponent({
         form.name = '';
         form.nik = '';
         form.rate = 0;
-        form.group_position = ""
-        form.department = ""
-        form.vendor = ""
+        form.group_id = 0
+        form.department_id = 0
+        form.vendor_id = 0
         form.join_date = ""
         form.isActive = true;
         form.date_started_pks = ""
@@ -446,6 +443,7 @@ export default defineComponent({
           name: "",
           team_leader: "",
         }];
+        amountFormattedBudget.value = 0;
         // form.contracts = [{
         //   start_contract: "",
         //   end_contract: "",
@@ -522,6 +520,12 @@ export default defineComponent({
         amountFormattedBudget.value = selected.rate;
     }
 
+    const handleSelectionGroupChange = (e) => {
+      const selected = props.groupData.find(item => item.id == e.target.value);
+      departmentData.value = selected.departments
+      form.department_id = departmentData.value.id;
+    }
+
     const addProject = () => {
       form.projects.push({
         name: "",
@@ -554,8 +558,10 @@ export default defineComponent({
       props,
       handleSubmit,
       handleSelectionChange,
+      handleSelectionGroupChange,
       rupiahFormatter,
       amountFormattedBudget,
+      departmentData,
       addProject,
       removeProject,
       // addContract,

@@ -21,6 +21,10 @@
                 @view="view"
                 @edit="edit"
                 @search="handleSearch"
+                @page-change="pageChange"
+                :count="count"
+                :itemsPerPage="itemsPerPage" 
+                :pageCount="totalPages"
             />
         </div>
     </div>
@@ -48,6 +52,9 @@ export default defineComponent({
         const textfilter = ref('')
         const items = ref([]);
         const searchParams = ref({});
+        const count = ref(0)
+        const itemsPerPage = ref(0)
+        const totalPages = ref(0)
 
         const datefilter = ref({
             start: null,
@@ -57,6 +64,7 @@ export default defineComponent({
         const columns = [
             { key: 'pks', label: 'PKS' },
             { key: 'application', label: 'Aplikasi' },
+            { key: 'dateStarted', label: 'Start Date' },
             { key: 'dueDateLicense', label: 'Due Date' },
             { key: 'status', label: 'Status', slot:'status' },
             { key: 'action', label: '', slot: 'action', headerClass: 'text-end rounded-end'},
@@ -84,14 +92,28 @@ export default defineComponent({
                         bastFileUrl:item.bastFileUrl,
                         application:item.application,
                         dueDateLicense:formatTanggal(formatDateToYMD(item.dueDateLicense)),
+                        dateStarted:formatTanggal(formatDateToYMD(item.dateStarted)),
                         statusAlert:item.status,
                         status:status,
                     }
                 });
+                count.value = response.data.meta.totalCount;
+                itemsPerPage.value = response.data.meta.pageSize
+                totalPages.value = response.data.meta.totalPages
             } catch (error) {
                 console.error("Error ambil data:", error);
             }
         };
+
+        const pageChange = (cpage: any,paramSearch:any)=>{
+            getData(
+                {
+                    page: cpage,
+                    per_page: 10,
+                    ...paramSearch
+                }
+            )
+        }
 
         onBeforeMount(async () => {
             await getData();
@@ -140,7 +162,11 @@ export default defineComponent({
             remove,mencariData,
             edit,
             view,
-            handleSearch
+            handleSearch,
+            pageChange,
+            count,
+            itemsPerPage,
+            totalPages
         };
     },
 

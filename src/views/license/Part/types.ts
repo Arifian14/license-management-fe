@@ -8,8 +8,9 @@ export interface LicenseData {
   pks: string;
   application: string;
   due_date_license: string;
-  start_date_license: string;
-  description: string;
+  date_started: string;
+  descriptions: string;
+  vendor_id: number;
   healthchecks: IHealthCheck[];
   file_pks: string;
   file_bast: string;

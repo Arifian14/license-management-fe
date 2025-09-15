@@ -37,7 +37,7 @@ export default defineComponent({
   props: {
     header: { type: Array, required: true },
     data: { type: Array, required: true },
-    itemsPerPage: { type: Number, default: 10 },
+    itemsPerPage: { type: Number, default: 5 },
     itemsPerPageDropdownEnabled: {
       type: Boolean,
       required: false,

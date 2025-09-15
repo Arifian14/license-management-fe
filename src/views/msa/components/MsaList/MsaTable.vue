@@ -49,19 +49,22 @@
           <button class="btn btn-sm btn-light me-1" @click="emitEdit(row)">
             <KTIcon icon-name="pencil" icon-class="fs-3" />
           </button>
-          <button class="btn btn-sm btn-light" @click="confirmDelete(row)">
+          <!-- <button class="btn btn-sm btn-light" @click="confirmDelete(row)">
             <KTIcon icon-name="trash" icon-class="fs-3" />
-          </button>
+          </button> -->
         </div>
       </template>
     </Table>
+    <TablePagination v-if="pageCount > 1" :total-pages="pageCount" :total="count" :per-page="itemsPerPage"
+            :current-page="page" @page-change="pageChange" />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent,reactive } from "vue";
+import { defineComponent,reactive, ref } from "vue";
 import type { PropType } from "vue";
 import Table from "@/components/widget/Table.vue";
+import TablePagination from "@/components/widget/TablePagination.vue";
 import Swal from 'sweetalert2';
 import type { MsaTableColumn } from "../../types";
 import { Field, ErrorMessage, Form as VForm, useForm } from "vee-validate";
@@ -73,7 +76,7 @@ interface ISearch{
 
 export default defineComponent({
   name: "MsaTable",
-  components: { Table,Field },
+  components: { Table,Field,TablePagination },
   props: {
     columns: {
       type: Array as PropType<MsaTableColumn[]>,
@@ -82,10 +85,20 @@ export default defineComponent({
     items: {
       type: Array as PropType<any[]>,
       required: true
-    }
+    },
+    count: { type: Number, required: false, default: 5 },
+    itemsPerPage: { type: Number, default: 5 },
+    itemsPerPageDropdownEnabled: {
+        type: Boolean,
+        required: false,
+        default: true,
+    },
+    currentPage: { type: Number, required: false, default: 1 },
+    pageCount: { type: Number, required: true},
   },
-  emits: ['view', 'edit', 'remove','search'],
+  emits: ['view', 'edit', 'remove','search','page-change'],
   setup(props, { emit }) {
+    const page = ref(props.currentPage);
     const search = reactive<ISearch>({
         freeText: '',
         typeSearch: null
@@ -136,13 +149,25 @@ export default defineComponent({
         emit('search', params);
     }
 
+    const pageChange = (newPage: number) => {
+        const props:any = typeSearchs.filter((v,i) => v.id == search.typeSearch)
+        const params = {};
+        if(props.length > 0 && search.freeText != null){
+          params[props[0].name] = search.freeText.trim()
+        }
+        page.value = newPage;
+        emit("page-change", page.value, params);
+    };
+
     return {
       confirmDelete,
       emitView,
       emitEdit,
       handleSearch,
       search,
-      typeSearchs
+      typeSearchs,
+      pageChange,
+      page
     };
   }
 });

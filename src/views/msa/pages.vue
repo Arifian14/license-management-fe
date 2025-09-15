@@ -9,6 +9,10 @@
         @edit="editMsa"
         @remove="removeMsa"
         @search="handleSearch"
+        @page-change="pageChange"
+        :count="count"
+        :itemsPerPage="itemsPerPage" 
+        :pageCount="totalPages"
       />
     </div>
   </div>
@@ -31,7 +35,7 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter();
-    const { items, columns,handleSearch } = useMsaList();
+    const { items, columns,handleSearch,pageChange,count,itemsPerPage,totalPages } = useMsaList();
     const { deleteMsa } = useMsaApi();
 
     const removeMsa = async (row: any) => {
@@ -69,7 +73,11 @@ export default defineComponent({
       removeMsa,
       viewMsa,
       editMsa,
-      handleSearch
+      handleSearch,
+      pageChange,
+      count,
+      itemsPerPage,
+      totalPages
     };
   }
 });

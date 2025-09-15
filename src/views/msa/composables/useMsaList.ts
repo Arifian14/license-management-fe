@@ -14,6 +14,9 @@ export function useMsaList() {
     end: null,
   });
   const searchParams = ref({});
+  const count = ref(0)
+  const itemsPerPage = ref(0)
+  const totalPages = ref(0)
 
   const columns: MsaTableColumn[] = [
     { key: 'pks', label: 'PKS' },
@@ -77,10 +80,23 @@ export function useMsaList() {
           alert: item.isBudgetBelowThreshold,
         }
       });
+      count.value = response.meta.totalCount;
+      itemsPerPage.value = response.meta.pageSize
+      totalPages.value = response.meta.totalPages
     } catch (err) {
       console.error("Error ambil data:", err);
     }
   };
+
+  const pageChange = (cpage: any,paramSearch:any)=>{
+    getData(
+      {
+        page: cpage,
+        per_page: 10,
+        ...paramSearch
+      }
+    )
+  }
 
   onBeforeMount(async () => {
     await getData();
@@ -100,6 +116,10 @@ export function useMsaList() {
     textfilter,
     datefilter,
     getData,
+    pageChange,
+    count,
+    itemsPerPage,
+    totalPages,
     handleSearch
   };
 }

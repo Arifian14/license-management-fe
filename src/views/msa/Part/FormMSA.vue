@@ -129,7 +129,7 @@
       <!--begin::Card title-->
       <div class="card-title">
         <!--begin::Search-->
-        <!-- <div class="d-flex align-items-center position-relative my-1">
+        <div class="d-flex align-items-center position-relative my-1">
           <KTIcon
             icon-name="magnifier"
             icon-class="fs-1 position-absolute ms-6"
@@ -137,11 +137,10 @@
           <input
             type="text"
             v-model="search"
-            @input="searchItems()"
             class="form-control form-control-solid w-250px ps-15"
             placeholder="Search MSA"
           />
-        </div> -->
+        </div>
         <!--end::Search-->
       </div>
       <!--begin::Card title-->
@@ -172,7 +171,7 @@
         <Datatable
           @on-sort="sort"
           @on-items-select="onItemSelect"
-          :data="formRef.msa"
+          :data="filteredTableData"
           :header="tableHeader"
           :enable-items-per-page-dropdown="true"
           :checkbox-enabled="false"
@@ -272,12 +271,14 @@
     :dataMsa="formRef.msa"
     :dataPks="pksRef"
     :roleData="roleData"
+    :groupData="groupData"
+    :vendorData="vendorData"
   />
 </template>
 
 <script lang="ts">
 import { getAssetPath } from "@/core/helpers/assets";
-import { defineComponent, onMounted,computed,ref, reactive, onUpdated } from "vue";
+import { defineComponent, onMounted,computed,ref, reactive, onUpdated, onBeforeUpdate, watch } from "vue";
 import DateRangeFilter from "@/components/widget/DateRangeFilter.vue";
 import { Field, ErrorMessage, Form as VForm, useForm } from "vee-validate";
 import * as Yup from "yup";
@@ -308,9 +309,9 @@ interface IMSADetail {
   name: string;
   rate: number | null;
   used_budget: number | null;
-  group_position: string;
-  department: string;
-  vendor: string;
+  group_id: number;
+  department_id: number;
+  vendor_id: number;
   isActive: boolean;
   join_date: string;
   leave_date: string;
@@ -358,6 +359,8 @@ export default defineComponent({
     const selectedIds = ref<Array<number>>([]);
     const selectedData:any = ref({});
     const roleData:any = ref([]);
+    const groupData:any = ref([]);
+    const vendorData:any = ref([]);
     const modalMode = ref<'create' | 'edit' | 'view'>('create');
     const pageMode = route.query.mode;
 
@@ -389,16 +392,22 @@ export default defineComponent({
     ]);
 
       onMounted(() => {
-        initCustomers.value.splice(0, tableData.value.length, ...tableData.value);
-
-        if(formRef.msa.length > 0) tableData.value = formRef.msa;
-
         fetchPKSDataById(id)
+        fetchGroupPosition()
+        fetchVendor()
       })
 
-      onUpdated(() => {
-        if(formRef.msa.length > 0) tableData.value = formRef.msa;
-      })
+      // onUpdated(() => {
+      //   if(formRef.msa.length > 0) tableData.value = formRef.msa;
+      // })
+      // onUpdated(() => {
+      //   console.log('onUpdate')
+      //   if(formRef.msa.length > 0) {
+      //     tableData.value = formRef.msa;
+      //     // Perbarui initCustomers ketika data berubah
+      //     initCustomers.value = [...formRef.msa];
+      //   }
+      // })
     
 
     const formRef = reactive<IMSA>({
@@ -415,6 +424,11 @@ export default defineComponent({
         file_pks: "",
         file_bast: ""
     });
+
+    watch(() => formRef.msa, (newValue) => {
+        tableData.value = [...newValue];
+        initCustomers.value = [...newValue];
+      }, { deep: true, immediate: true });
 
 
     const removeDetail = async (row: any) => {
@@ -433,7 +447,7 @@ export default defineComponent({
       });
 
       if (confirm.isConfirmed) {
-        const index = formRef.msa.findIndex(obj => (obj.name === row.name && obj.group_position === row.group_position) );
+        const index = formRef.msa.findIndex(obj => (obj.name === row.name && obj.group_id === row.group_id) );
         formRef.msa.splice(index, 1);
       }
     };
@@ -449,6 +463,38 @@ export default defineComponent({
     });
 
     const totalUsedPeople = computed(() => formRef.msa.length);
+
+    const fetchGroupPosition = async () => {
+      try {
+        ApiService.setHeader()
+        const url = `/api/master`
+        const params = {
+          type:'group'
+        }
+        const response = await ApiService.query(url,{params});
+        const data = response.data.data;
+        groupData.value = data;
+      } catch (error) {
+        console.error("Gagal mengambil data:", error);
+        Swal.fire("Error", "Gagal mengambil data.", "error");
+      }
+    }
+
+    const fetchVendor = async () => {
+      try {
+        ApiService.setHeader()
+        const url = `/api/master`
+        const params = {
+          type:'vendor'
+        }
+        const response = await ApiService.query(url,{params});
+        const data = response.data.data;
+        vendorData.value = data;
+      } catch (error) {
+        console.error("Gagal mengambil data:", error);
+        Swal.fire("Error", "Gagal mengambil data.", "error");
+      }
+    }
 
     // GET API by ID
     const fetchPKSDataById = async (id: string | number) => {
@@ -478,9 +524,9 @@ export default defineComponent({
               nik: item.nik,
               role: item.role.role,
               rate: item.role.rate,
-              group_position: item.groupPosition,
-              department: item.department,
-              vendor: item.vendor,
+              group_id: item.group.id,
+              department_id: item.department.id,
+              vendor_id: item.vendor.id,
               join_date: item.joinDate != undefined ? formatDateToYMD(item.joinDate) : formatDateToYMD(data.dateStarted),
               leave_date: item.leaveDate ? formatDateToYMD(item.leaveDate) : formatDateToYMD(data.dateEnded),
               isActive: item.isActive,
@@ -494,9 +540,11 @@ export default defineComponent({
             });
             return dataDetail;
           })
+          tableData.value = [...formRef.msa];
+          initCustomers.value = [...formRef.msa];
         }
 
-        console.log(formRef,'==formRef==')
+        console.log(data,'====data====')
         
       } catch (error) {
         console.error("Gagal mengambil data:", error);
@@ -540,9 +588,9 @@ export default defineComponent({
         data.role_id = item.role_id;
         data.nik = item.nik;
         data.name = item.name;
-        data.group_position = item.group_position;
-        data.department = item.department;
-        data.vendor = item.vendor;
+        data.group_id = item.group_id;
+        data.department_id = item.department_id;
+        data.vendor_id = item.vendor_id;
         data.join_date = item.join_date;
         data.projects = item.projects;
 
@@ -648,26 +696,26 @@ export default defineComponent({
     }
 
     const search = ref<string>("");
-    const searchItems = () => {
-      // tableData.value.splice(0, tableData.value.length, ...initCustomers.value);
-      tableData.value = [...initCustomers.value];
-      if (search.value !== "") {
-        let results: Array<any> = [];
-          for (let j = 0; j < tableData.value.length; j++) {
-          if (searchingFunc(tableData.value[j], search.value)) {
-            results.push(tableData.value[j]);
-          }
-        }
-        // tableData.value.splice(0, tableData.value.length, ...results);
-        tableData.value = [...results];
+
+    const filteredTableData = computed(() => {
+      if (search.value === "") {
+        return [...formRef.msa];
       }
-      MenuComponent.reinitialization();
-    };
+      
+      const searchTerm = search.value.toLowerCase();
+      return formRef.msa.filter(item => searchingFunc(item, searchTerm));
+    });
 
     const searchingFunc = (obj: any, value: string): boolean => {
+      // Cari di semua properti string pada objek
       for (let key in obj) {
-        if (!Number.isInteger(obj[key]) && !(typeof obj[key] === "object")) {
-          if (obj[key].indexOf(value) != -1) {
+        if (obj[key] !== null && typeof obj[key] === "string") {
+          if (obj[key].toLowerCase().includes(value)) {
+            return true;
+          }
+        } else if (typeof obj[key] === "number") {
+          // Juga cari dalam angka yang dikonversi ke string
+          if (obj[key].toString().includes(value)) {
             return true;
           }
         }
@@ -694,16 +742,18 @@ export default defineComponent({
       validateField,
       onItemSelect,
       tableData,
+      filteredTableData,
       tableHeader,
       sort,
       selectedIds,
-      searchItems,
       search,
       openModal,
       handleSubmitMSA,
       modalMode,
       selectedData,
       roleData,
+      groupData,
+      vendorData,
       totalUsedBudget,
       totalUsedPeople,
       availableBudget,
