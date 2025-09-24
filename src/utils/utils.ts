@@ -70,3 +70,19 @@ export function reverseRupiahFormatter(value: string): number {
   const parsed = parseFloat(numericString)
   return isNaN(parsed) ? 0 : parsed
 }
+
+export function checkExpiredDate(dateEnded: string | any, isOnchange:any = ''): boolean {
+  if(isOnchange != ''){
+    dateEnded = dateEnded.target.value;
+  }
+  // Get today's date without time
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Parse the input date
+  const endDate = new Date(dateEnded);
+  endDate.setHours(0, 0, 0, 0);
+
+  // Return true if expired (before today), false otherwise
+  return endDate <= today;
+}

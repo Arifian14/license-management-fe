@@ -36,8 +36,8 @@
 
     <Table :columns="columns" :data="items" :npage="1">
       <template #status="{ row }">
-        <span :class="`badge badge-light-${row.alert ? 'danger' : 'success'} fs-7 fw-bold`">
-          {{ row.status }}
+        <span :class="`badge badge-light-${(row.status == 'active') && row.alert != true ? 'success' : 'danger'} fs-7 fw-bold`">
+          {{ row.status_msg }}
         </span>
       </template>
 
@@ -46,7 +46,7 @@
           <button class="btn btn-sm btn-light me-1" @click="emitView(row)">
             <KTIcon icon-name="abstract-26" icon-class="fs-3" />
           </button>
-          <button class="btn btn-sm btn-light me-1" @click="emitEdit(row)">
+          <button class="btn btn-sm btn-light me-1" @click="emitEdit(row)" v-if="row.isExpired == true ? false : true">
             <KTIcon icon-name="pencil" icon-class="fs-3" />
           </button>
           <!-- <button class="btn btn-sm btn-light" @click="confirmDelete(row)">
@@ -109,11 +109,11 @@ export default defineComponent({
         name: 'pks',
         desc: 'PKS'
       },
-      {
-        id:2,
-        name: 'name',
-        desc: 'MSA Name'
-      }
+      // {
+      //   id:2,
+      //   name: 'name',
+      //   desc: 'MSA Name'
+      // }
     ]
     const confirmDelete = async (row: any) => {
       const result = await Swal.fire({

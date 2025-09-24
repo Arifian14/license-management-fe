@@ -25,9 +25,9 @@
       >
         <!--begin::Item-->
         <li class="breadcrumb-item text-white opacity-75">
-          <router-link to="/" class="text-white text-hover-primary"
-            >Home</router-link
-          >
+          <!-- <router-link to="/" class="text-white text-hover-primary"
+            ></router-link -->
+            Home
         </li>
         <!--end::Item-->
         <template v-for="(item, i) in breadcrumbs" :key="i">
