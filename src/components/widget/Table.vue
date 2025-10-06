@@ -10,7 +10,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(row, rowIndex) in data" :key="rowIndex" :class="(row.alert !== undefined && row.alert) || (row.statusAlert !== undefined && row.statusAlert === 'yellow') || (row.isPksExpiringSoon !== undefined && row.isPksExpiringSoon) ? 'bg bg-warning' : (row.statusAlert !== undefined && row.statusAlert === 'red') ? 'bg bg-danger' : ''">
+                <tr v-for="(row, rowIndex) in data" :key="rowIndex" :class="(row.alert !== undefined && row.alert) || (row.statusAlert !== undefined && row.statusAlert === 'yellow') || (row.status !== undefined && row.status == 'expiring_soon') ? 'bg bg-warning' : (row.status !== undefined && row.status == 'expired') ? 'bg bg-danger' : (row.statusAlert !== undefined && row.statusAlert === 'red') ? 'bg bg-danger' : ''">
                     <td class="p-5">
                         <span :class="row.statusAlert !== undefined && row.statusAlert === 'red' ? 'text-white fw-bold' :  'text-black fw-bold text-hover-primary d-block mb-1 fs-6'">
                             {{ (npage - 1) * 10 + rowIndex + 1 }}

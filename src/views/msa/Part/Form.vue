@@ -205,6 +205,15 @@
       <div class="col-3 offset-md-9 text-end">
         <button
           type="button"
+          @click="handleBack"
+          id="btn-submit-msa"
+          class="btn btn-danger me-3"
+          >
+              <span class="indicator-label"> Back </span>
+        </button>
+        
+        <button
+          type="button"
           @click="handleCancel"
           id="btn-submit-msa"
           class="btn btn-warning me-3"
@@ -419,9 +428,9 @@ export default defineComponent({
 
               router.push({name:"msa"});
           }
-      } catch (error) {
+      } catch (error:any) {
           Swal.fire({
-              text: 'Data failed to save. Please check your input.',
+              text: error.response.data.message != undefined ? error.response.data.message : 'Data failed to Save!',
               icon: 'error',
               confirmButtonText: 'Ok, got it!',
               customClass: {
@@ -448,6 +457,26 @@ export default defineComponent({
 
       if (confirm.isConfirmed) {
         resetForm()
+      }
+    }
+
+    const handleBack = async () => {
+      const confirm = await Swal.fire({
+          title: 'Apakah kamu yakin untuk kembali ke halaman PKS?',
+          text: 'Data akan di reset',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Ya, back!',
+          cancelButtonText: 'Batal',
+          customClass: {
+          confirmButton: 'btn btn-primary',
+          cancelButton: 'btn btn-light',
+          },
+          buttonsStyling: false,
+      });
+
+      if (confirm.isConfirmed) {
+        router.push({ path: `/msa`});
       }
     }
 
@@ -575,6 +604,7 @@ export default defineComponent({
     return {
       handleSubmit,
       handleCancel,
+      handleBack,
       handleChangeDateStarted,
       getAssetPath,
       validationSchema,

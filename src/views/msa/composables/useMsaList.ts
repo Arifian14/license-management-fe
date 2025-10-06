@@ -1,6 +1,6 @@
 import { ref, onBeforeMount } from "vue";
 import { useMsaApi } from "./useMsaApi";
-import { formatDateToYMD, formatTanggal, rupiahFormatter } from "@/utils/utils";
+import { formatDateToYMD, formatTanggal, rupiahFormatter,checkExpiredDate } from "@/utils/utils";
 import type { MsaTableColumn } from "../types";
 
 export function useMsaList() {
@@ -57,16 +57,25 @@ export function useMsaList() {
 
       const data = response.data;
       items.value = data.map((item: any) => {
+        console.log(item,'===item===')
         let statusParts: string[] = [];
 
-        if (item.isPksExpiringSoon) {
+        if (item.status == 'expiring_soon') {
           statusParts.push('PKS is Expiring Soon');
         }
         if (item.isBudgetBelowThreshold) {
           statusParts.push('Budget Quota ≤ 20%');
         }
 
-        let status = statusParts.join(' & ');
+        let status_msg = statusParts.join(' & ');
+
+        if(item.status == 'expired'){
+          status_msg = 'Expired';
+        }
+
+        if(item.status == 'active' && !item.isBudgetBelowThreshold){
+          status_msg = 'Active';
+        }
 
         return {
           id: item.id,
@@ -75,9 +84,11 @@ export function useMsaList() {
           dateEnded: formatTanggal(formatDateToYMD(item.dateEnded)),
           peopleQuota: item.peopleQuota,
           budgetQuota: rupiahFormatter(item.budgetQuota),
-          status: status,
+          status: item.status,
+          status_msg: status_msg,
           isPksExpiringSoon: item.isPksExpiringSoon,
-          alert: item.isBudgetBelowThreshold,
+          alert: item.isBudgetBelowThreshold,  
+          isExpired: checkExpiredDate(formatDateToYMD(item.dateEnded)),  
         }
       });
       count.value = response.meta.totalCount;

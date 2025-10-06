@@ -151,7 +151,7 @@
           v-if="pageMode == 'view' ? false : true"
           class="d-flex justify-content-end"
           data-kt-customer-table-toolbar="base"
-        >
+          >
           <!--begin::Add customer-->
           <button
             type="button"
@@ -207,13 +207,13 @@
                 Update 
               </button>
 
-              <button
-                type="button"
-                class="btn btn-sm btn-danger"
-                @click="removeDetail(row)"
-              >
-                Delete 
-              </button>
+                <button
+                  v-if="row.isDB == true ? false : true"
+                  type="button"
+                  class="btn btn-sm btn-danger"
+                  @click="removeDetail(row)">
+                  Delete 
+                </button>
             </div>
             <div v-if="pageMode == 'view' ? true : false">
               <button
@@ -232,6 +232,15 @@
 
     <div class="row mt-10 mb-10" v-if="pageMode == 'view' ? false : true" >
       <div class="col-3 offset-md-9 text-end">
+        <button
+          type="button"
+          @click="handleBack"
+          id="btn-submit-msa"
+          class="btn btn-danger me-3"
+          >
+              <span class="indicator-label"> Back </span>
+        </button>
+
         <button
           type="button"
           @click="handleCancel"
@@ -293,7 +302,7 @@ import type { Sort } from "@/components/kt-datatable//table-partials/models";
 import { MenuComponent } from "@/assets/ts/components";
 import { Modal } from 'bootstrap'
 import MSAModal from "./Modal/MsaModal.vue";
-import {formatDateToYMD,getDiffMonths,rupiahFormatter,dateNow,usedBudgetMSA,formatTanggal,reverseTanggal} from "@/utils/utils"
+import {formatDateToYMD,getDiffMonths,rupiahFormatter,dateNow,usedBudgetMSA,formatTanggal,reverseTanggal,checkExpiredDate} from "@/utils/utils"
 import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
 
@@ -363,6 +372,7 @@ export default defineComponent({
     const vendorData:any = ref([]);
     const modalMode = ref<'create' | 'edit' | 'view'>('create');
     const pageMode = route.query.mode;
+    const isExpired:any = ref(false);
 
     const id = parseInt(route.params.id.toString());
 
@@ -513,6 +523,8 @@ export default defineComponent({
         pksRef.file_bast = data.fileBast;
         pksRef.file_pks = data.filePks;
 
+        isExpired.value = checkExpiredDate(data.date_ended);
+
         roleData.value = data.roles;
 
         if(data.msaDetails.length > 0){
@@ -530,6 +542,7 @@ export default defineComponent({
               join_date: item.joinDate != undefined ? formatDateToYMD(item.joinDate) : formatDateToYMD(data.dateStarted),
               leave_date: item.leaveDate ? formatDateToYMD(item.leaveDate) : formatDateToYMD(data.dateEnded),
               isActive: item.isActive,
+              isDB: true,
             }
             dataDetail.used_budget = usedBudgetMSA(item.role.rate,getDiffMonths(dataDetail.join_date,dataDetail.leave_date));
             dataDetail.projects = item.projects?.map((item) => {
@@ -674,6 +687,26 @@ export default defineComponent({
       }
     }
 
+    const handleBack = async () => {
+      const confirm = await Swal.fire({
+          title: 'Apakah kamu yakin untuk kembali ke halaman PKS?',
+          text: 'Data akan di reset',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Ya, back!',
+          cancelButtonText: 'Batal',
+          customClass: {
+          confirmButton: 'btn btn-primary',
+          cancelButton: 'btn btn-light',
+          },
+          buttonsStyling: false,
+      });
+
+      if (confirm.isConfirmed) {
+        router.push({ path: `/msa`});
+      }
+    }
+
     function resetForm(){
         formRef.msa = [];
     }
@@ -684,6 +717,7 @@ export default defineComponent({
       msa['used_budget'] = usedBudgetMSA(msa.rate,getDiffMonths(msa.join_date,msa.leave_date));
       if(mode == 'create'){
           msa['id'] = formRef.msa.length;
+          msa['isDB'] = false;
           msa['role'] = findRole.role;
           formRef.msa.push(msa)
         }else{
@@ -737,6 +771,7 @@ export default defineComponent({
       getAssetPath,
       handleSubmit,
       handleCancel,
+      handleBack,
       formRef,
       pksRef,
       validateField,
@@ -757,6 +792,7 @@ export default defineComponent({
       totalUsedBudget,
       totalUsedPeople,
       availableBudget,
+      isExpired,
       removeDetail,
       pageMode,
       rupiahFormatter,

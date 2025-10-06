@@ -79,6 +79,7 @@
               placeholder="Due Date License"
               v-model="form.join_date"
               :disabled="isView"
+              @change="handleChangeJoinDate"
             />
             <div class="fv-plugins-message-container">
               <div class="fv-help-block">
@@ -150,7 +151,7 @@
                   Active
                 </label>
               </div>
-              <div class="form-check mx-2">
+              <div class="form-check mx-2" v-if="isJoin == true ? true : false">
                 <input 
                   class="form-check-input" 
                   type="radio" 
@@ -284,7 +285,7 @@ import * as Yup from "yup";
 import BaseModal from "@/components/widget/BaseModal.vue";
 import { Modal } from "bootstrap";
 import Swal from "sweetalert2/dist/sweetalert2.js";
-import {rupiahFormatter,reverseRupiahFormatter,reverseTanggal} from "@/utils/utils"
+import {rupiahFormatter,checkExpiredDate,reverseTanggal} from "@/utils/utils"
 
 interface IDetailProjects{
   name: string;
@@ -359,6 +360,7 @@ export default defineComponent({
     const modalRef = ref<null | HTMLElement>(null);
     const amountFormattedBudget = ref<number>(0)
     const departmentData = ref<any>([])
+    const isJoin:any = ref(false);
 
     const detailSchema = Yup.object().shape({
       name: Yup.string().required().label("Project"),
@@ -366,6 +368,11 @@ export default defineComponent({
     });
 
     const validationSchema = Yup.object().shape({
+      nik: Yup.string()
+      .matches(/^\d+$/, "NIK must be numeric")
+      .min(15, "NIK must be at least 15 digits")
+      .max(16, "NIK must be at most 16 digits")
+      .required("NIK is required"),
       name: Yup.string().required(),
       role_id: Yup.number().required(),
       group_id: Yup.number().required(),
@@ -409,8 +416,11 @@ export default defineComponent({
 
         dataMsaRef.value = [...dataMsa];
         if (val.name != undefined) {
+           isJoin.value = checkExpiredDate(val.join_date)
             nikTemp.value = val.nik;
             amountFormattedBudget.value = val.rate;
+            const departments = props.groupData.filter((v,i) => v.id == val.group_id);
+            departmentData.value = departments[0].departments;
             Object.assign(form, val)
         } else {
             resetForm()
@@ -537,6 +547,10 @@ export default defineComponent({
       form.projects.splice(index, 1);
     }
 
+    const handleChangeJoinDate = (e) => {
+      isJoin.value = checkExpiredDate(e,'onchange')
+    }
+
     // const addContract = () => {
     //   form.contracts.push({
     //     start_contract: "",
@@ -557,11 +571,13 @@ export default defineComponent({
       modalTitle,
       props,
       handleSubmit,
+      handleChangeJoinDate,
       handleSelectionChange,
       handleSelectionGroupChange,
       rupiahFormatter,
       amountFormattedBudget,
       departmentData,
+      isJoin,
       addProject,
       removeProject,
       // addContract,
