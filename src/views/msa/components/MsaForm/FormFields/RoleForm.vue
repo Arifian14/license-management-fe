@@ -102,8 +102,8 @@ export default defineComponent({
         text: 'Apakah Anda yakin ingin menghapus role ini?',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Ya, hapus!',
-        cancelButtonText: 'Batal',
+        confirmButtonText: 'Yes, delete!',
+        cancelButtonText: 'Cancel',
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
       });

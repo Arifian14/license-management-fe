@@ -360,7 +360,7 @@ export default defineComponent({
       pks: Yup.string().required().label("No PKS"),
       date_started: Yup.string().required().label("Date Started"),
       date_ended: Yup.string().required().label("Date Ended"),
-      people_quota: Yup.number().required().label("People Quota"),
+      people_quota: Yup.number().required("${label} is required").label("People Quota").typeError("${label} must be a number"),
       budget_quota: Yup.string().required().label("Budget Quota"),
       file_pks: Yup.mixed().required().label("File PKS"),
       file_bast: Yup.mixed().required().label("File BAST"),
@@ -379,8 +379,8 @@ export default defineComponent({
           rate: formRef.roles[id].rate
         }
       } catch (error) {
-        console.error("Gagal mengambil data:", error);
-        Swal.fire("Error", "Gagal mengambil data.", "error");
+        console.error("Failed to get data:", error);
+        Swal.fire("Error", "Failed to get data.", "error");
       }
     };
 
@@ -426,7 +426,16 @@ export default defineComponent({
                   },
               });
 
-              router.push({name:"msa"});
+              router.push({
+                name:"msa",
+                state:{
+                  flashMessage:{
+                    type:'success',
+                    text:'Data successfully saved',
+                    pks: data.pks
+                  }
+                }
+              });
           }
       } catch (error:any) {
           Swal.fire({
@@ -442,12 +451,12 @@ export default defineComponent({
 
     const handleCancel = async () => {
       const confirm = await Swal.fire({
-          title: 'Apakah kamu yakin?',
-          text: 'Data akan di reset',
+          title: 'Are you sure?',
+          text: 'Data will be reset',
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonText: 'Ya, cancel!',
-          cancelButtonText: 'Batal',
+          confirmButtonText: 'Yes, cancel!',
+          cancelButtonText: 'Cancel',
           customClass: {
           confirmButton: 'btn btn-primary',
           cancelButton: 'btn btn-light',
@@ -462,12 +471,12 @@ export default defineComponent({
 
     const handleBack = async () => {
       const confirm = await Swal.fire({
-          title: 'Apakah kamu yakin untuk kembali ke halaman PKS?',
-          text: 'Data akan di reset',
+          title: 'Go back to the PKS page?',
+          text: 'Data will be reset',
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonText: 'Ya, back!',
-          cancelButtonText: 'Batal',
+          confirmButtonText: 'Yes, back!',
+          cancelButtonText: 'Cancel',
           customClass: {
           confirmButton: 'btn btn-primary',
           cancelButton: 'btn btn-light',
@@ -494,12 +503,12 @@ export default defineComponent({
 
     const handleSubmit = async () => {
       const confirm = await Swal.fire({
-          title: 'Apakah kamu yakin?',
-          text: 'Data akan disimpan ke sistem.',
+          title: 'Are you sure?',
+          text: 'Data will be saved to the system.',
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonText: 'Ya, simpan!',
-          cancelButtonText: 'Batal',
+          confirmButtonText: 'Yes, Save!',
+          cancelButtonText: 'Cancel',
           customClass: {
           confirmButton: 'btn btn-primary',
           cancelButton: 'btn btn-light',
@@ -518,12 +527,12 @@ export default defineComponent({
 
     const removeDetail = async (row: any) => {
       const confirm = await Swal.fire({
-        title: 'Apakah kamu yakin?',
-        text: 'Data akan dihapus',
+        title: 'Are you sure?',
+        text: 'Data will be deleted',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Ya, hapus!',
-        cancelButtonText: 'Batal',
+        confirmButtonText: 'Yes, delete!',
+        cancelButtonText: 'Cancel',
         customClass: {
         confirmButton: 'btn btn-primary',
         cancelButton: 'btn btn-light',

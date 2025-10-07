@@ -75,7 +75,7 @@ export function useLicenseForm(initialData?: LicenseData) {
           }
       });
     } catch (error) {
-      console.error("Gagal mengambil data:", error);
+      console.error("Failed to get data:", error);
       throw error;
     }
   };

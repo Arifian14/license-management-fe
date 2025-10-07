@@ -71,7 +71,7 @@ export default defineComponent({
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Ya, hapus',
-                cancelButtonText: 'Batal',
+                cancelButtonText: 'Cancel',
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#3085d6',
             });

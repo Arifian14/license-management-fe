@@ -87,6 +87,13 @@ export const useAuthStore = defineStore("auth", () => {
   //   }
   // }
 
+    // Tambahkan listener untuk logout otomatis saat browser/tab ditutup
+    // if (typeof window !== "undefined") {
+    //   window.addEventListener("beforeunload", () => {
+    //     purgeAuth();
+    //   });
+    // }
+
   return {
     errors,
     user,
