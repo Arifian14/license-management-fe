@@ -233,9 +233,8 @@ export default defineComponent({
                     hideModal(modalRef.value);
                 }
             } catch (error) {
-                console.error("Error ambil data:", error);
                 Swal.fire({
-                    text: 'Gagal menyimpan data. Silakan coba lagi.',
+                    text: 'Failed to save. Please try again.',
                     icon: 'error',
                     confirmButtonText: 'Ok, got it!',
                     customClass: {
@@ -251,12 +250,12 @@ export default defineComponent({
 
         const handleSubmit = async () => {
             const confirm = await Swal.fire({
-                title: 'Apakah kamu yakin?',
-                text: 'Data akan disimpan ke sistem.',
+                title: 'Are you sure?',
+                text: 'Data will be saved to the system.',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Ya, simpan!',
-                cancelButtonText: 'Batal',
+                confirmButtonText: 'yes, save!',
+                cancelButtonText: 'Cancel',
                 customClass: {
                 confirmButton: 'btn btn-primary',
                 cancelButton: 'btn btn-light',

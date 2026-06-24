@@ -285,8 +285,8 @@ export default defineComponent({
 
     const handleSubmit = async () => {
       const confirm = await Swal.fire({
-        title: "Apakah kamu yakin?",
-        text: "Data akan disimpan ke sistem.",
+        title: "Are you sure?",
+        text: "Data will be saved to the system.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Ya, simpan!",

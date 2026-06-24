@@ -29,12 +29,12 @@ export default defineComponent({
     const router = useRouter();
     const handleBack = async () => {
     const confirm = await Swal.fire({
-        title: 'Apakah kamu yakin untuk kembali ke halaman License?',
-        text: 'Data akan di reset',
+        title: 'Go back to the license page?',
+        text: 'Data will be reset',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Ya, back!',
-        cancelButtonText: 'Batal',
+        confirmButtonText: 'Yes, back!',
+        cancelButtonText: 'Cancel',
         customClass: {
         confirmButton: 'btn btn-primary',
         cancelButton: 'btn btn-light',

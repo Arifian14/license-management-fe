@@ -16,7 +16,7 @@
                             {{ (npage - 1) * 10 + rowIndex + 1 }}
                         </span>
                     </td>
-                    <td v-for="(col, colIndex) in columns" :key="colIndex" :class="row.statusAlert !== undefined && row.statusAlert === 'red' ? 'text-white fw-bold' :  ''">
+                    <td v-for="(col, colIndex) in columns" :key="colIndex" :class="row.statusAlert !== undefined && row.statusAlert === 'red' ? 'text-white fw-bold' :  ''" style="max-width: 200px;">
                         <slot :name="col.slot" v-bind="{ row }">
                             {{ row[col.key] }}
                         </slot>

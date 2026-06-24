@@ -109,6 +109,16 @@
           />
 
           <FormActions v-if="!isView" @submit="handleSubmit" />
+          <div class="text-end pt-15 mb-5">
+            <button
+              type="button"
+              @click="handleBack"
+              class="btn btn-danger me-3"
+              >
+                  <span class="indicator-label"> Back </span>
+            </button>
+          </div>
+          
         </div>
       </div>
     </VForm>
@@ -153,12 +163,12 @@ export default defineComponent({
 
     const handleSubmit = async () => {
       const confirm = await Swal.fire({
-        title: "Apakah kamu yakin?",
-        text: "Data akan disimpan ke sistem.",
+        title: "Are you sure?",
+        text: "Data will be saved to the system",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonText: "Ya, simpan!",
-        cancelButtonText: "Batal",
+        confirmButtonText: "Yes, Save!",
+        cancelButtonText: "Cancel",
         customClass: {
           confirmButton: "btn btn-primary",
           cancelButton: "btn btn-light",
@@ -177,10 +187,19 @@ export default defineComponent({
             customClass: { confirmButton: "btn btn-success" },
           });
 
-          router.push({ name: "license" });
+          router.push({
+            name:"license",
+            state:{
+              flashMessage:{
+                type:'success',
+                text:'Data successfully saved',
+                pks: license.value.pks
+              }
+            }
+          });
         } catch (error) {
           Swal.fire({
-            text: "Gagal menyimpan data. Silakan coba lagi.",
+            text: "Failed to saved. Please try again.",
             icon: "error",
             confirmButtonText: "Ok, got it!",
             customClass: { confirmButton: "btn btn-danger" },
@@ -200,8 +219,8 @@ export default defineComponent({
         const data = response.data.data;
         vendorData.value = data;
       } catch (error) {
-        console.error("Gagal mengambil data:", error);
-        Swal.fire("Error", "Gagal mengambil data.", "error");
+        console.error("Failed to get data:", error);
+        Swal.fire("Error", "Failed to get data.", "error");
       }
     }
 
@@ -209,11 +228,16 @@ export default defineComponent({
       fetchVendor()
     })
 
+    const handleBack = ()=>{
+      router.push({ path: `/license`});
+    }
+
     return {
       license,
       isView,
       validationSchema,
       handleSubmit,
+      handleBack,
       vendorData,
       addHealthCheck,
       removeHealthCheck,

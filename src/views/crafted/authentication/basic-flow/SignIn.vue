@@ -166,7 +166,7 @@ export default defineComponent({
         });
       } else {
         Swal.fire({
-          text: error[0] as string,
+          text: "Invalid username or password",
           icon: "error",
           buttonsStyling: false,
           confirmButtonText: "Try again!",

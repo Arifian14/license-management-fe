@@ -24,15 +24,15 @@ const routes: Array<RouteRecordRaw> = [
           breadcrumbs: ["Dashboards"],
         },
       },
-      {
-        path: "/accident",
-        name: "accident",
-        component: () => import("@/views/accident/pages.vue"),
-        meta: {
-          pageTitle: "Accident",
-          breadcrumbs: ["Accident"],
-        },
-      },
+      // {
+      //   path: "/accident",
+      //   name: "accident",
+      //   component: () => import("@/views/accident/pages.vue"),
+      //   meta: {
+      //     pageTitle: "Accident",
+      //     breadcrumbs: ["Accident"],
+      //   },
+      // },
       {
         path: "/accident/detail",
         name: "accident-detail",

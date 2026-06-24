@@ -85,8 +85,8 @@ export default defineComponent({
 
     const handleSubmit = async () => {
       const confirm = await Swal.fire({
-        title: "Apakah kamu yakin?",
-        text: "Data akan disimpan ke sistem.",
+        title: "Are you sure?",
+        text: "Data will be saved to the system.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Ya, simpan!",
@@ -123,12 +123,12 @@ export default defineComponent({
 
     const handleCancel = async () => {
       const confirm = await Swal.fire({
-        title: 'Apakah kamu yakin?',
-        text: 'Data akan di reset',
+        title: 'Are you sure?',
+        text: 'Data will be reset',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Ya, cancel!',
-        cancelButtonText: 'Batal',
+        confirmButtonText: 'Yes, cancel!',
+        cancelButtonText: 'Cancel',
         customClass: {
           confirmButton: 'btn btn-primary',
           cancelButton: 'btn btn-light',

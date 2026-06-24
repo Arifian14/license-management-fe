@@ -9,7 +9,7 @@
               type="text"
               v-model="search.pks" 
               class="form-control form-control-solid" 
-              placeholder="No PKS"
+              placeholder="No PKS & Aplikasi"
           />
       </div>
       <div class="col-md-3">
@@ -154,8 +154,8 @@ export default defineComponent({
         selectedData.value = response.data.data || response.data;
         console.log(selectedData.value)
       } catch (error) {
-        console.error("Gagal mengambil data:", error);
-        Swal.fire("Error", "Gagal mengambil data.", "error");
+        console.error("Failed to get data:", error);
+        Swal.fire("Error", "Failed to get data.", "error");
       }
     };
 
@@ -203,7 +203,7 @@ export default defineComponent({
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Ya, hapus',
-        cancelButtonText: 'Batal',
+        cancelButtonText: 'Cancel',
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
       });

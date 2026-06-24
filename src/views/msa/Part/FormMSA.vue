@@ -230,6 +230,19 @@
       </div>
     </div>
 
+    <div class="row mt-10 mb-10" v-if="pageMode == 'view' ? true : false" >
+      <div class="col-3 offset-md-9 text-end">
+        <button
+          type="button"
+          @click="handleBack"
+          id="btn-submit-msa"
+          class="btn btn-danger me-3"
+          >
+              <span class="indicator-label"> Back </span>
+        </button>
+      </div>
+    </div>
+
     <div class="row mt-10 mb-10" v-if="pageMode == 'view' ? false : true" >
       <div class="col-3 offset-md-9 text-end">
         <button
@@ -443,12 +456,12 @@ export default defineComponent({
 
     const removeDetail = async (row: any) => {
       const confirm = await Swal.fire({
-        title: 'Apakah kamu yakin?',
-        text: 'Data akan dihapus',
+        title: 'Are you sure?',
+        text: 'Data will be deleted',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Ya, hapus!',
-        cancelButtonText: 'Batal',
+        confirmButtonText: 'Yes, delete!',
+        cancelButtonText: 'Cancel',
         customClass: {
         confirmButton: 'btn btn-primary',
         cancelButton: 'btn btn-light',
@@ -485,8 +498,8 @@ export default defineComponent({
         const data = response.data.data;
         groupData.value = data;
       } catch (error) {
-        console.error("Gagal mengambil data:", error);
-        Swal.fire("Error", "Gagal mengambil data.", "error");
+        console.error("Failed to get data:", error);
+        Swal.fire("Error", "Failed to get data.", "error");
       }
     }
 
@@ -501,8 +514,8 @@ export default defineComponent({
         const data = response.data.data;
         vendorData.value = data;
       } catch (error) {
-        console.error("Gagal mengambil data:", error);
-        Swal.fire("Error", "Gagal mengambil data.", "error");
+        console.error("Failed to get data:", error);
+        Swal.fire("Error", "Failed to get data.", "error");
       }
     }
 
@@ -557,11 +570,9 @@ export default defineComponent({
           initCustomers.value = [...formRef.msa];
         }
 
-        console.log(data,'====data====')
-        
       } catch (error) {
-        console.error("Gagal mengambil data:", error);
-        Swal.fire("Error", "Gagal mengambil data.", "error");
+        console.error("Failed to get data:", error);
+        Swal.fire("Error", "Failed to get data.", "error");
       }
     };
 
@@ -577,7 +588,7 @@ export default defineComponent({
         const lengthMsa = formRef.msa.length + 1;
 
         if(peopleQuota < lengthMsa){
-          Swal.fire("Warning", "Sudah melebihi quota.", "warning");
+          Swal.fire("Warning", "The quota limit has been exceeded.", "warning");
           return
         }
         
@@ -630,7 +641,16 @@ export default defineComponent({
                   },
               });
               // fetchPKSDataById(id)
-              router.push({name:"msa"});
+              router.push({
+                name:"msa",
+                state:{
+                  flashMessage:{
+                    type:'success',
+                    text:'Data successfully saved',
+                    pks: pksRef.pks
+                  }
+                }
+              });
           }
       } catch (error:any) {
           Swal.fire({
@@ -646,12 +666,12 @@ export default defineComponent({
 
     const handleSubmit = async () => {
       const confirm = await Swal.fire({
-        title: 'Apakah kamu yakin?',
-        text: 'Data akan disimpan ke sistem.',
+        title: 'Are you sure?',
+        text: 'Data will be saved to the system.',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Ya, simpan!',
-        cancelButtonText: 'Batal',
+        confirmButtonText: 'Yes, Save!',
+        cancelButtonText: 'Cancel',
         customClass: {
         confirmButton: 'btn btn-primary',
         cancelButton: 'btn btn-light',
@@ -667,12 +687,12 @@ export default defineComponent({
 
     const handleCancel = async () => {
       const confirm = await Swal.fire({
-          title: 'Apakah kamu yakin?',
-          text: 'Data akan di reset',
+          title: 'Are you sure?',
+          text: 'Data will be reset',
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonText: 'Ya, cancel!',
-          cancelButtonText: 'Batal',
+          confirmButtonText: 'Yes, cancel!',
+          cancelButtonText: 'Cancel',
           customClass: {
           confirmButton: 'btn btn-primary',
           cancelButton: 'btn btn-light',
@@ -689,12 +709,12 @@ export default defineComponent({
 
     const handleBack = async () => {
       const confirm = await Swal.fire({
-          title: 'Apakah kamu yakin untuk kembali ke halaman PKS?',
-          text: 'Data akan di reset',
+          title: 'Go back to the PKS page?',
+          text: 'Data will be reset',
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonText: 'Ya, back!',
-          cancelButtonText: 'Batal',
+          confirmButtonText: 'Yes, back!',
+          cancelButtonText: 'Cancel',
           customClass: {
           confirmButton: 'btn btn-primary',
           cancelButton: 'btn btn-light',

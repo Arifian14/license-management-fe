@@ -19,7 +19,7 @@ export function useMsaList() {
   const totalPages = ref(0)
 
   const columns: MsaTableColumn[] = [
-    { key: 'pks', label: 'PKS' },
+    { key: 'pks', label: 'PKS'},
     { key: 'dateStarted', label: 'Date Start' },
     { key: 'dateEnded', label: 'Date End' },
     { key: 'peopleQuota', label: 'People Quota' },
@@ -57,7 +57,6 @@ export function useMsaList() {
 
       const data = response.data;
       items.value = data.map((item: any) => {
-        console.log(item,'===item===')
         let statusParts: string[] = [];
 
         if (item.status == 'expiring_soon') {

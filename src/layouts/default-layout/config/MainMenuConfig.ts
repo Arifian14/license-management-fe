@@ -7,11 +7,11 @@ const MainMenuConfig: Array<MenuItem> = [
         heading: "dashboard",
         route: "/dashboard",
       },
-      {
-        heading: "Accident",
-        route: "/accident",
+      // {
+      //   heading: "Accident",
+      //   route: "/accident",
 
-      },
+      // },
       // {
       //   heading: "Maintance",
       //   route: "/builder",

@@ -42,7 +42,8 @@ export const useAuthStore = defineStore("auth", () => {
         setAuth(data);
       })
       .catch(({ response }) => {
-        setError(response.data.errors);
+        console.log(response.data.message,'response error')
+        setError(response.data.message);
       });
   }
 
@@ -85,6 +86,13 @@ export const useAuthStore = defineStore("auth", () => {
   //     purgeAuth();
   //   }
   // }
+
+    // Tambahkan listener untuk logout otomatis saat browser/tab ditutup
+    // if (typeof window !== "undefined") {
+    //   window.addEventListener("beforeunload", () => {
+    //     purgeAuth();
+    //   });
+    // }
 
   return {
     errors,
