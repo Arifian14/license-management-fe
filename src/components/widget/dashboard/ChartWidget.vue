@@ -5,11 +5,9 @@
     <div class="card-header border-0 pt-5">
       <!--begin::Title-->
       <h3 class="card-title align-items-start flex-column">
-        <span class="card-label fw-bold fs-3 mb-1">Recent Pie Chart</span>
+        <span class="card-label fw-bold fs-3 mb-1">{{ title }}</span>
 
-        <span class="text-muted fw-semibold fs-7"
-          >Coba coba</span
-        >
+        <span class="text-muted fw-semibold fs-7">{{ subtitle }}</span>
       </h3>
       <!--end::Title-->
     </div>
@@ -45,37 +43,46 @@ export default defineComponent({
   name: "widget-1",
   props: {
     widgetClasses: String,
-    height: Number,
+    height: { type: Number, default: 350 },
+    title: { type: String, default: "Distribusi Status License" },
+    subtitle: { type: String, default: "Berdasarkan sisa masa berlaku" },
+    series: {
+      type: Array as () => number[],
+      default: () => [44, 55, 57, 56, 61, 58],
+    },
+    labels: {
+      type: Array as () => string[],
+      default: () => ["Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+    },
+    colors: {
+      type: Array as () => string[],
+      default: () => [],
+    },
   },
-  // components: {
-  //   Dropdown1,
-  // },
-  setup() {
+  setup(props) {
     const chartRef = ref<typeof VueApexCharts | null>(null);
     const chart = ref<ApexOptions>({});
     const store = useThemeStore();
 
-    // ✅ Pie chart hanya butuh array angka
-    const series = [44, 55, 57, 56, 61, 58];
-
     const themeMode = computed(() => store.mode);
 
+    const buildOptions = () => chartOptions(props.labels, props.colors);
+
     onBeforeMount(() => {
-      Object.assign(chart.value, chartOptions());
+      Object.assign(chart.value, buildOptions());
     });
 
     const refreshChart = () => {
       if (!chartRef.value) return;
-      chartRef.value.updateOptions(chartOptions());
+      chartRef.value.updateOptions(buildOptions());
     };
 
-    watch(themeMode, () => {
+    watch([themeMode, () => props.labels, () => props.colors], () => {
       refreshChart();
     });
 
     return {
       chart,
-      series,
       chartRef,
       getAssetPath,
     };
@@ -83,7 +90,7 @@ export default defineComponent({
 });
 
 // ✅ Pie Chart Options
-const chartOptions = (): ApexOptions => {
+const chartOptions = (labels: string[], colors: string[]): ApexOptions => {
   const labelColor = getCSSVariableValue("--bs-gray-500");
   const baseColor = getCSSVariableValue("--bs-primary");
 
@@ -94,8 +101,7 @@ const chartOptions = (): ApexOptions => {
       toolbar: { show: false },
     },
 
-    // ✅ pengganti xaxis
-    labels: ["Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+    labels,
 
     legend: {
       show: true,
@@ -121,31 +127,15 @@ const chartOptions = (): ApexOptions => {
       style: {
         fontSize: "12px",
       },
-      y: {
-        formatter: (val: number) => "$" + val + " thousands",
-      },
     },
 
-    colors: [
-      baseColor,
-      "#50CD89",
-      "#F1416C",
-      "#7239EA",
-      "#FFC700",
-      "#009EF7",
-    ],
+    colors:
+      colors.length > 0
+        ? colors
+        : [baseColor, "#50CD89", "#F1416C", "#7239EA", "#FFC700", "#009EF7"],
 
     fill: {
       opacity: 1,
-    },
-
-    states: {
-      normal: { filter: { type: "none", value: 0 } },
-      hover: { filter: { type: "none", value: 0 } },
-      active: {
-        allowMultipleDataPointsSelection: false,
-        filter: { type: "none", value: 0 },
-      },
     },
   };
 };
