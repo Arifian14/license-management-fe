@@ -117,6 +117,8 @@ export default defineComponent({
       },
       currentPage: { type: Number, required: false, default: 1 },
       pageCount: { type: Number, required: true},
+      // Nama status filter awal (mis. 'under_1_month' / 'under_3_months') dari query param halaman
+      initialStatus: { type: String, required: false, default: '' },
   },
   emits: ['view', 'edit', 'remove','search','page-change'],
   setup(props, { emit }) {
@@ -144,6 +146,15 @@ export default defineComponent({
         param: 'status'
       }
     ]
+
+    // Selaraskan dropdown "Search By" dengan status filter awal (dari klik kartu dashboard),
+    // sehingga filter tetap ikut saat user melakukan search / pindah halaman.
+    if (props.initialStatus) {
+      const matched = status.find((v) => v.name === props.initialStatus);
+      if (matched) {
+        search.status = matched.id;
+      }
+    }
 
     // GET API by ID
     const fetchDataById = async (id: string | number) => {

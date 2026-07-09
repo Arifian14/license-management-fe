@@ -2,6 +2,7 @@ import { reactive, ref } from "vue";
 import ApiService from "@/core/services/ApiService";
 
 export interface LicenseSummary {
+  // berdasar baris License/PKS
   total: number;
   under3Months: number;
   under1Month: number;
@@ -10,6 +11,12 @@ export interface LicenseSummary {
     yellow: number;
     red: number;
   };
+  // berdasar nama aplikasi unik
+  applications: {
+    total: number;
+    under3Months: number;
+    under1Month: number;
+  };
 }
 
 const emptySummary = (): LicenseSummary => ({
@@ -17,6 +24,7 @@ const emptySummary = (): LicenseSummary => ({
   under3Months: 0,
   under1Month: 0,
   statusDistribution: { green: 0, yellow: 0, red: 0 },
+  applications: { total: 0, under3Months: 0, under1Month: 0 },
 });
 
 export function useDashboard() {

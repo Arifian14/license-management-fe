@@ -40,7 +40,7 @@
             /> -->
             
             <!-- Body Component -->
-            <LicenseBody 
+            <LicenseBody
                 :columns="columns"
                 :items="items"
                 @remove="remove"
@@ -49,8 +49,9 @@
                 @search="handleSearch"
                 @page-change="pageChange"
                 :count="count"
-                :itemsPerPage="itemsPerPage" 
+                :itemsPerPage="itemsPerPage"
                 :pageCount="totalPages"
+                :initialStatus="initialStatus"
             />
         </div>
     </div>
@@ -76,6 +77,10 @@ export default defineComponent({
         const router = useRouter();
         const route = useRoute();
         const flash = ref<any>(null);
+        // Status filter awal dari query param (mis. dari klik kartu dashboard PKS Under 1M -> ?status=under_1_month)
+        const initialStatus = ref(
+            typeof route.query.status === 'string' ? route.query.status : ''
+        );
         const selectedFilter = ref('date');
         const textfilter = ref('')
         const items = ref([]);
@@ -154,7 +159,8 @@ export default defineComponent({
             });
 
         onBeforeMount(async () => {
-            await getData();
+            // Terapkan filter status dari query param (jika ada) saat pertama kali memuat data
+            await getData(initialStatus.value ? { status: initialStatus.value } : {});
         })
 
         const handleAdd = () => {
@@ -205,7 +211,8 @@ export default defineComponent({
             count,
             itemsPerPage,
             totalPages,
-            flash
+            flash,
+            initialStatus
         };
     },
 
