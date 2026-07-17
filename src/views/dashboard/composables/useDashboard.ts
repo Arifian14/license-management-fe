@@ -14,8 +14,11 @@ export interface LicenseSummary {
   // berdasar nama aplikasi unik
   applications: {
     total: number;
+    above3Months: number;
     under3Months: number;
     under1Month: number;
+    // aplikasi unik dengan PKS pada pita 1-3 bulan (dihitung terpisah, bukan selisih)
+    between1And3Months: number;
   };
 }
 
@@ -24,7 +27,7 @@ const emptySummary = (): LicenseSummary => ({
   under3Months: 0,
   under1Month: 0,
   statusDistribution: { green: 0, yellow: 0, red: 0 },
-  applications: { total: 0, under3Months: 0, under1Month: 0 },
+  applications: { total: 0, above3Months: 0, under3Months: 0, under1Month: 0, between1And3Months: 0 },
 });
 
 export function useDashboard() {

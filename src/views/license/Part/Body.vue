@@ -144,6 +144,18 @@ export default defineComponent({
         name: 'under_1_month',
         desc: 'License Under 1 Month',
         param: 'status'
+      },
+      {
+        id: 3,
+        name: 'between_1_3_months',
+        desc: 'License 1-3 Months',
+        param: 'status'
+      },
+      {
+        id: 4,
+        name: 'above_3_months',
+        desc: 'License Above 3 Months',
+        param: 'status'
       }
     ]
 

@@ -20,8 +20,8 @@
         color="warning"
         icon-color="white"
         title="PKS Under 3M"
-        :description="`${summary.under3Months}`"
-        :to="{ path: '/license', query: { status: 'under_3_months' } }"
+        :description="`${summary.under3Months - summary.under1Month}`"
+        :to="{ path: '/license', query: { status: 'between_1_3_months' } }"
       ></CardWidget>
     </div>
     <div class="col-xl-4">
@@ -48,7 +48,7 @@
         icon-color="white"
         title="Total Aplikasi"
         :description="`${summary.applications.total}`"
-        :to="{ path: '/license' }"
+        :to="{ path: '/license', query: { view: 'application' } }"
       ></CardWidget>
     </div>
     <div class="col-xl-4">
@@ -58,8 +58,8 @@
         color="warning"
         icon-color="white"
         title="Aplikasi Under 3M"
-        :description="`${summary.applications.under3Months}`"
-        :to="{ path: '/license', query: { status: 'under_3_months' } }"
+        :description="`${summary.applications.between1And3Months}`"
+        :to="{ path: '/license', query: { view: 'application', status: 'between_1_3_months' } }"
       ></CardWidget>
     </div>
     <div class="col-xl-4">
@@ -70,7 +70,7 @@
         icon-color="white"
         title="Aplikasi Under 1M"
         :description="`${summary.applications.under1Month}`"
-        :to="{ path: '/license', query: { status: 'under_1_month' } }"
+        :to="{ path: '/license', query: { view: 'application', status: 'under_1_month' } }"
       ></CardWidget>
     </div>
   </div>
@@ -85,6 +85,7 @@
         :series="statusSeries"
         :labels="statusLabels"
         :colors="statusColors"
+        :filters="statusFilters"
       ></ChartWidget>
     </div>
     <div class="col-xl-6">
@@ -95,6 +96,8 @@
         :series="appStatusSeries"
         :labels="statusLabels"
         :colors="statusColors"
+        :filters="statusFilters"
+        view="application"
       ></ChartWidget>
     </div>
   </div>
@@ -120,6 +123,10 @@ export default defineComponent({
 
     const statusLabels = ["Aman (> 3 bulan)", "Hampir (1–3 bulan)", "Kritis (< 1 bulan)"];
     const statusColors = ["#50CD89", "#FFC700", "#F1416C"];
+    // Filter status per kategori (selaras urutan statusLabels/series):
+    //   Aman→semua, Hampir→pita 1-3 bln (presisi), Kritis→≤1 bln.
+    // Disamakan dengan perilaku kartu PKS/Aplikasi saat diklik.
+    const statusFilters = ["above_3_months", "between_1_3_months", "under_1_month"];
 
     // Distribusi status berdasar baris PKS
     const statusSeries = computed(() => [
@@ -128,10 +135,14 @@ export default defineComponent({
       summary.statusDistribution.red,
     ]);
 
-    // Distribusi status berdasar nama aplikasi unik (green, yellow, red)
+    // Distribusi status berdasar nama aplikasi unik (green, yellow, red).
+    // Kuning memakai between1And3Months (hitungan distinct pita, dari backend) — BUKAN
+    // (under3Months - under1Month) — agar cocok dengan list aplikasi saat slice diklik.
+    // Catatan: karena satu aplikasi bisa punya PKS di beberapa pita, slice bisa saling
+    // beririsan (jumlah slice tidak selalu = total aplikasi); ini memang sifat "coverage".
     const appStatusSeries = computed(() => {
-      const { total, under3Months, under1Month } = summary.applications;
-      return [total - under3Months, under3Months - under1Month, under1Month];
+      const { under1Month, between1And3Months, above3Months } = summary.applications;
+      return [above3Months, between1And3Months, under1Month];
     });
 
     onMounted(() => {
@@ -148,6 +159,7 @@ export default defineComponent({
       summary,
       statusLabels,
       statusColors,
+      statusFilters,
       statusSeries,
       appStatusSeries,
     };

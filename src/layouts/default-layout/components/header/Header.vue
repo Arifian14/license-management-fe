@@ -5,7 +5,7 @@
     class="header align-items-stretch"
     :data-kt-sticky="isHeaderSticky"
     data-kt-sticky-name="header"
-    data-kt-sticky-offset="{default: '200px', lg: '300px'}"
+    data-kt-sticky-offset="{default: '10px', lg: '10px'}"
   >
     <!--begin::Container-->
     <div

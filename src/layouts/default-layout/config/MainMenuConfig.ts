@@ -16,13 +16,21 @@ const MainMenuConfig: Array<MenuItem> = [
       //   heading: "Maintance",
       //   route: "/builder",
       // },
-      {
-        heading: "MSA",
-        route: "/msa",
-      },
+      // {
+      //   heading: "MSA",
+      //   route: "/msa",
+      // },
       {
         heading: "License",
         route: "/license",
+      },
+      {
+        heading: "User",
+        route: "/user",
+      },
+      {
+        heading: "Vendor",
+        route: "/vendor",
       },
     ],
   }

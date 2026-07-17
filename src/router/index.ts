@@ -96,6 +96,24 @@ const routes: Array<RouteRecordRaw> = [
           breadcrumbs: ["License","Form"],
         },
       },
+      {
+        path: "/vendor",
+        name: "vendor",
+        component:  () => import("@/views/vendor/pages.vue"),
+        meta: {
+          pageTitle: "Vendor",
+          breadcrumbs: ["Vendor"],
+        },
+      },
+      {
+        path: "/user",
+        name: "user",
+        component: () => import("@/views/user/pages.vue"),
+        meta: {
+          pageTitle: "User",
+          breadcrumbs: ["User"],
+        },
+      },
     ],
   },
   {
